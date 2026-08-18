@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quequitos y Materias Primas by Gris</title>
+  <link rel="icon" href="img/relogo.jpeg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header" id="inicio">
+
+    <div class="menu container">
+      <a href="#inicio" class="logo">
+        <img src="img/relogo.jpeg" alt="Quequitos y Materias Primas by Gris logo" />
+      </a>
+
+      <input type="checkbox" id="menu" />
+      <label for="menu" class="menu-label" aria-label="Abrir menú">
+        <span></span><span></span><span></span>
+      </label>
+
+      <nav class="navbar">
+        <ul>
+          <li><a href="#inicio">Inicio</a></li>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#referencias">Referencias</a></li>
+          <li><a href="#metodos">Cómo pedir</a></li>
+          <li><a href="#contacto">Contacto</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <div class="header-content">
+      <div class="header-texto">
+        <h1>Quequitos Materias Primas <br>by <span>Gris</span></h1>
+        <p class="header-p">
+          Harinas, chocolates, colorantes, moldes y todo lo que necesitas
+          para tus creaciones — al mayoreo y menudeo.
+        </p>
+        <a href="#productos" class="btn-1">Ver catálogo</a>
+      </div>
+
+      <!-- logo moved to the menu (left) -->
+    </div>
+  </header>
+
+  <!-- ============ PRODUCTOS ============ -->
+  <section class="productos" id="productos">
+    <div class="productos-content container">
+      <span class="eyebrow">Nuestro catálogo</span>
+      <h2>Productos</h2>
+      <span class="divisor"></span>
+      <p class="txt-p">Ingredientes y herramientas de calidad para tus creaciones.</p>
+
+      <div class="productos-group" id="productosGrid"></div>
+      <div class="extra-products" id="extraProductos"></div>
+
+      <a href="#" id="ver-mas" class="btn-1">Ver más</a>
+    </div>
+  </section>
+
+  <!-- ============ PROMO / PASIÓN ============ -->
+  <section class="promo">
+    <div class="promo-inner container">
+      <div class="promo-texto">
+        <span class="eyebrow">Mayoreo y menudeo</span>
+        <h2>Pasión por la repostería</h2>
+        <span class="divisor divisor--izq"></span>
+        <p>
+          Desde la selección hasta la entrega, cuidamos cada detalle para
+          ofrecer materia prima de calidad a negocios y aficionados.
+          Pregunta por nuestros precios especiales de mayoreo.
+        </p>
+        <a href="#" id="promoWhatsapp" target="_blank" rel="noopener" class="btn-1 btn-1--claro">Cotizar por WhatsApp</a>
+      </div>
+      <div class="promo-galeria">
+        <div class="promo-foto promo-foto--1"><span>🎂</span></div>
+        <div class="promo-foto promo-foto--2"><span>🍫</span></div>
+        <div class="promo-foto promo-foto--3"><span>🧁</span></div>
+        <div class="promo-foto promo-foto--4"><span>🍓</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ REFERENCIAS ============ -->
+  <section class="referencias" id="referencias">
+    <div class="referencias-content container">
+      <span class="eyebrow">Nos recomiendan</span>
+      <h2>Referencias</h2>
+      <span class="divisor"></span>
+      <p class="txt-p">Marcas e insumos con los que trabajamos.</p>
+
+      <div class="referencias-group">
+        <div class="referencia-card">
+          <img src="img/gurru.png" alt="Gurru Cakes">
+        </div>
+        <div class="referencia-card">
+          <img src="img/kerry.png" alt="Kerry">
+        </div>
+        <div class="referencia-card">
+          <img src="img/dawn.png" alt="Dawn Food Products">
+        </div>
+      </div>
+
+      <a href="#" id="referenciasWhatsapp" target="_blank" rel="noopener" class="btn-1">Contáctanos</a>
+    </div>
+  </section>
+
+  <!-- ============ CÓMO PEDIR ============ -->
+  <section class="metodos" id="metodos">
+    <div class="container">
+      <span class="eyebrow">Fácil y directo</span>
+      <h2>Cómo hacer tu pedido</h2>
+      <span class="divisor"></span>
+
+      <div class="metodos-content">
+        <div class="metodo-card">
+          <span class="metodo-num">01</span>
+          <h3>Elige tus productos</h3>
+          <p>Explora el catálogo y da clic en "Pedir por WhatsApp" en cada producto que te interese.</p>
+        </div>
+        <div class="metodo-card">
+          <span class="metodo-num">02</span>
+          <h3>Confirmamos por WhatsApp</h3>
+          <p>Te contactamos para confirmar cantidades, tiempos de entrega y forma de pago.</p>
+        </div>
+        <div class="metodo-card">
+          <span class="metodo-num">03</span>
+          <h3>Pagas en efectivo o transferencia</h3>
+          <p>Cerramos el pedido directamente contigo, sin pagos en línea ni comisiones.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer" id="contacto">
+    <div class="footer-content container">
+      <div class="link">
+        <h3 class="footer-marca logo-texto">Quequitos y Materias Primas by Gris</h3>
+        <p class="footer-desc">Materias primas de repostería para negocios y aficionados.</p>
+      </div>
+      <div class="link">
+        <h3>México</h3>
+        <a href="#" id="footerCiudad">Saltillo, Coahuila</a>
+        <a href="#" id="footerTelefono">Llamar: +52 81 2901 6051</a>
+      </div>
+      <div class="link">
+        <h3>Síguenos</h3>
+        <a href="#" id="footerFacebook" target="_blank" rel="noopener noreferrer">Facebook</a>
+        <a href="#" id="footerInstagram" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="#" id="footerWhatsapp" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+    <p class="footer-copy">© <span id="anio"></span> Quequitos y Materias Primas by Gris</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="productos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

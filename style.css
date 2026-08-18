@@ -1,0 +1,440 @@
+/* ============================================================
+   QUEQUITOS Y MATERIAS PRIMAS by Gris — estilo pastelería elegante / romántico
+   Fuentes: Epilogue (títulos, marca y nombres de producto)
+            y Poppins (texto corrido). Merriweather queda cargada
+            como respaldo por si se quiere volver al serif.
+   ============================================================ */
+:root {
+  /* Fondos */
+  --crema:        #fdf8f4;
+  --nude:         #f7ece5;
+  --rosa-fondo:   #f6e5e2;
+  --rosa-polvo:   #ecd3d0;
+  --blanco:       #ffffff;
+
+  /* Acentos */
+  --rosa:         #d99ea2;
+  --rosa-oscuro:  #c78489;
+  --vino:         #9c6a68;
+  --arena:        #d9c3ae;
+
+  /* Texto */
+  --texto:        #5c4a45;
+  --texto-suave:  #927d77;
+  --titulo:       #7b5651;
+
+  /* Bordes y sombras */
+  --linea:        rgba(124, 86, 81, 0.12);
+  --sombra:       0 10px 26px rgba(124, 86, 81, 0.08);
+  --sombra-alta:  0 18px 40px rgba(124, 86, 81, 0.14);
+}
+
+* { box-sizing: border-box; margin:0; padding:0; text-decoration:none; list-style:none }
+
+body { font-family: 'Poppins', sans-serif; font-weight:300; background-color:var(--crema); color:var(--texto); line-height:1.65 }
+
+.container { max-width:1180px; margin:0 auto; width:100%; padding-left:24px; padding-right:24px }
+
+/* ------------------------------------------------------------
+   TIPOGRAFÍA
+   CORRECCIÓN: antes h1 y h2 eran color:var(--crema) — crema sobre
+   fondo crema, por eso los títulos de sección no se veían.
+   Ahora el color por defecto es --titulo y solo el h1 del header
+   (que va sobre foto) se pinta de blanco.
+   ------------------------------------------------------------ */
+h1, h2 { font-family:'Epilogue','Merriweather', serif; font-weight:500; color:var(--titulo) }
+h3     { font-family:'Epilogue','Merriweather', serif; font-weight:500; color:var(--titulo) }
+
+h1{
+  text-wrap:balance;
+  text-transform:uppercase; 
+   line-height:1.5em; 
+   letter-spacing:8px;
+}
+
+/* Encabezado de sección reutilizable */
+.eyebrow {
+  display:block;
+  font-family:'Poppins', sans-serif;
+  font-size:18px; font-weight:800;
+  letter-spacing:2px; text-transform:uppercase;
+  color:var(--rosa-oscuro);
+  margin-bottom:12px;
+}
+section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0 }
+
+.divisor {
+  display:block; width:64px; height:2px; margin:20px auto 22px;
+  background:linear-gradient(90deg, transparent, var(--rosa), transparent);
+  border-radius:2px;
+}
+.divisor--izq { margin-left:0; margin-right:auto; background:linear-gradient(90deg, var(--rosa), transparent) }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  position: relative; min-height:100vh; display:flex; flex-direction:column;
+  background-image: linear-gradient(110deg, rgba(94,50,53,0.44) 0%, rgba(172,119,123,0.28) 26%, rgba(200,158,158,0.16) 42%, rgba(255,255,255,0.04) 100%), url("img/hero-pastel_4.jpg");
+  background-size: cover; background-position: center right; background-repeat:no-repeat; overflow:hidden;
+}
+
+.header::before { content:""; position:absolute; inset:0; background: linear-gradient(100deg, rgba(181,120,124,0.38) 0%, rgba(181,120,124,0.20) 24%, rgba(60,40,38,0.10) 44%, rgba(20,20,20,0.04) 58%, rgba(20,20,20,0) 84%); }
+.header > * { position:relative; z-index:1 }
+
+.menu { position:absolute; top:18px; left:50%; transform:translateX(-50%); z-index:10; width:min(1180px, calc(100% - 32px)); display:flex; align-items:center; justify-content:space-between; padding:18px 28px; gap:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:999px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 14px 30px rgba(80,43,48,0.12) }
+
+.menu .logo img { display:block; width:52px; height:52px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.18); box-shadow:0 8px 18px rgba(80,43,48,0.12) }
+@media (max-width:480px) { .menu .logo img { width:40px; height:40px } }
+
+.menu .navbar ul { display:flex; align-items:center; gap:28px }
+.menu .navbar ul li a { font-size:11px; letter-spacing:2.2px; text-transform:uppercase; color:var(--crema); font-weight:500; padding:8px 0 6px; border-bottom:1px solid transparent; transition: color .25s, border-color .25s, transform .2s; text-shadow:0 1px 10px rgba(50,28,23,.34) }
+.menu .navbar ul li a:hover { color:#fff7f4; border-bottom-color: rgba(255,255,255,0.8); transform:translateY(-1px) }
+
+#menu { display:none }
+.menu-label { cursor:pointer; display:none; flex-direction:column; gap:5px; width:24px }
+.menu-label span { display:block; height:1.5px; width:100%; background:var(--titulo) }
+
+.header-content { flex:1; display:flex; align-items:center; justify-content:space-between; gap:clamp(24px,4vw,60px); padding:120px clamp(30px,5vw,80px) 90px }
+.header-texto { flex:1 1 0; max-width:620px; display:flex; flex-direction:column; justify-content:center }
+.header-texto .eyebrow { color:var(--rosa-oscuro); letter-spacing:5px; margin-bottom:18px }
+
+.header-texto h1 { font-size: clamp(72px, 12vw, 220px); line-height:.96; margin-bottom:30px; font-weight:500; color:#ffffff; text-shadow:none; letter-spacing:-4px }
+.header-texto h1 span { font-style:italic; font-weight:300 }
+.header-texto h1 em { font-style:italic; font-weight:300; display:block }
+
+.header-p { font-size:16.5px; font-weight:400; color:var(--crema); max-width:440px; margin-bottom:38px }
+
+.header-texto .btn-1 { align-self:flex-start }
+
+/* ============================================================
+   BOTONES
+   ============================================================ */
+.btn-1 { display:inline-block; padding:14px 38px; background-color:var(--vino); color:var(--crema); border-radius:999px; font-family:'Poppins', sans-serif; font-weight:400; font-size:11.5px; letter-spacing:2.5px; text-transform:uppercase; transition: background-color .3s, transform .2s, box-shadow .3s }
+.btn-1:hover { background-color:var(--titulo); transform:translateY(-2px); box-shadow:0 12px 26px rgba(124,86,81,.24) }
+.btn-1--claro { background-color:var(--blanco); color:var(--titulo) }
+.btn-1--claro:hover { background-color:var(--crema); color:var(--titulo) }
+
+/* Botón dentro de cada tarjeta de producto */
+.btn-pedir {
+  display:inline-block; width:100%; margin-top:auto;
+  padding:11px 18px; border-radius:999px;
+  background:var(--vino); color:var(--crema);
+  font-size:10.5px; font-weight:500; letter-spacing:1.6px; text-transform:uppercase;
+  text-align:center;
+  transition:background-color .25s, transform .2s;
+}
+.btn-pedir:hover { background:var(--titulo); transform:translateY(-2px) }
+
+.producto-agotado {
+  display:inline-block; width:100%; margin-top:auto;
+  padding:11px 18px; border-radius:999px;
+  background:var(--rosa-polvo); color:var(--titulo);
+  font-size:10.5px; font-weight:500; letter-spacing:1.6px; text-transform:uppercase;
+  text-align:center; opacity:.75;
+}
+
+/* ============================================================
+   PRODUCTOS — 3 POR FILA
+   ============================================================ */
+.productos {
+  position:relative;
+  padding:100px 0;
+  background-color:#f8f6f2;
+  background-image:
+    linear-gradient(to right, rgba(232, 171, 162, 0.75) 0, rgba(232, 171, 162, 0.75) 2px, transparent 2px),
+    repeating-linear-gradient(to right, rgba(147, 168, 178, 0.22) 0, rgba(147, 168, 178, 0.22) 1px, transparent 1px, transparent 26px),
+    repeating-linear-gradient(to bottom, rgba(147, 168, 178, 0.22) 0, rgba(147, 168, 178, 0.22) 1px, transparent 1px, transparent 26px);
+  background-size: 100% 100%, 100% 100%, 100% 100%;
+  background-repeat:no-repeat;
+  overflow:visible;
+}
+.productos::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
+  pointer-events:none;
+}
+.productos-content { position:relative; z-index:1; text-align:center }
+.txt-p { font-size:15px; color:var(--texto-suave); margin-bottom:52px }
+
+/* 3 columnas fijas en escritorio */
+.productos-group,
+.extra-products.show {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:28px;
+  align-items:stretch;      /* todas las tarjetas de la fila miden igual */
+  justify-items:stretch;
+  margin-top:18px;
+}
+.productos-group { min-height:48px }
+
+.extra-products { display:none }
+.extra-products.show { margin-top:28px }
+
+.producto-card {
+  display:flex; flex-direction:column;
+  background:var(--blanco); padding:18px; border-radius:16px; text-align:center;
+  border:1px solid var(--linea);
+  box-shadow:var(--sombra);
+  width:100%; max-width:none;   /* antes 280px: impedía llenar la columna */
+  height:100%;
+  transition:transform .25s, box-shadow .25s;
+}
+.producto-card:hover { transform:translateY(-5px); box-shadow:var(--sombra-alta) }
+
+.producto-card h3 { font-size:18px; color:var(--titulo); margin:12px 0 6px; line-height:1.3 }
+.producto-card p { color:var(--texto-suave); margin-bottom:14px; font-size:15px }
+.producto-card .producto-unidad { color:var(--texto); font-weight:500; font-size:13px }
+
+/* La imagen ocupa siempre la misma caja: sin esto, object-fit:cover
+   no hace nada (necesita altura) y las tarjetas quedan desiguales. */
+.producto-card img {
+  width:100%; max-width:none;
+  aspect-ratio:4 / 3;
+  height:auto;
+  object-fit:cover;
+  display:block; margin:0 0 4px;
+  border-radius:12px;
+  background:var(--nude);
+}
+.producto-img {
+  width:100%; aspect-ratio:4 / 3; height:auto;
+  display:flex; align-items:center; justify-content:center; font-size:44px;
+  background:linear-gradient(180deg,#fff,#f7f0ef); border-radius:12px;
+  color:var(--titulo); margin-bottom:4px;
+}
+
+.productos-content #ver-mas { display:inline-block !important; margin:36px auto 0; text-align:center }
+
+/* 2 por fila en tablet, 1 en móvil */
+@media (max-width:900px) {
+  .productos-group,
+  .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:20px }
+}
+@media (max-width:560px) {
+  .productos-group,
+  .extra-products.show { grid-template-columns:1fr; gap:18px }
+  .producto-card { padding:14px }
+}
+
+/* ============================================================
+   PROMO
+   ============================================================ */
+.promo { position:relative; background-image: linear-gradient(120deg, rgba(255,249,247,0.50) 0%, rgba(247,224,220,0.35) 0%, rgba(244,215,209,0.25) 0%), url("img/cupcakes.avif"); background-size:cover; background-position:center; padding:100px 0; overflow:hidden }
+.promo::before { content:""; position:absolute; inset:0; background: rgba(255,255,255,0.02) }
+
+.promo-inner { position:relative; z-index:1; display:flex; align-items:center; gap:60px; padding:0 30px; flex-wrap:wrap }
+.promo-texto { flex:1 1 380px }
+.promo-texto h2 { font-size: clamp(34px, 4.2vw, 50px); line-height:1.15; color:var(--titulo) }
+.promo-texto p { font-size:15px; color:var(--texto); margin-bottom:32px; max-width:460px }
+
+.promo-galeria {
+  flex:1 1 340px;
+  display:grid; grid-template-columns:repeat(2, 1fr); gap:16px;
+}
+.promo-foto {
+  aspect-ratio:1 / 1;
+  display:flex; align-items:center; justify-content:center;
+  font-size:clamp(38px, 5vw, 58px);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(255,255,255,.6);
+  border-radius:20px;
+  box-shadow:var(--sombra);
+  backdrop-filter:blur(4px);
+  transition:transform .3s;
+}
+.promo-foto:hover { transform:translateY(-6px) rotate(-2deg) }
+.promo-foto--2 { transform:translateY(18px) }
+.promo-foto--3 { transform:translateY(-18px) }
+.promo-foto--2:hover { transform:translateY(12px) rotate(2deg) }
+.promo-foto--3:hover { transform:translateY(-24px) rotate(-2deg) }
+
+@media (max-width:760px) { .promo-foto--2, .promo-foto--3 { transform:none } }
+
+/* ============================================================
+   REFERENCIAS — logos uniformes
+   ============================================================ */
+.referencias { padding:100px 0; background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(236,214,209,0.34) 100%), var(--nude) }
+.referencias-content { text-align:center }
+
+.referencias-group {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:18px;
+  max-width:760px; margin:0 auto 44px;
+  padding:0 20px;
+}
+
+/* Celda idéntica para los tres logos */
+.referencia-card {
+  display:flex; align-items:center; justify-content:center;
+  height:130px; padding:20px 24px;
+  background:var(--blanco);
+  border:1px solid var(--linea);
+  border-radius:18px;
+  box-shadow:var(--sombra);
+  max-width:none; flex:none;
+  transition:transform .25s, box-shadow .25s;
+}
+.referencia-card:hover { transform:translateY(-5px); box-shadow:var(--sombra-alta) }
+
+.referencia-card img {
+  max-width:100%; max-height:100%;
+  width:auto; height:auto;
+  object-fit:contain; display:block;
+  border-radius:0; box-shadow:none;
+  filter:none; opacity:1;
+  transform:scale(var(--escala, 1));
+  transition:filter .25s, opacity .25s;
+}
+.referencia-card:hover img { filter:none; opacity:1; transform:scale(var(--escala, 1)) }
+
+/* Ajuste óptico: misma altura NO significa mismo peso visual.
+   Sube o baja estos valores hasta que los tres se vean iguales. */
+.referencias-group .referencia-card:nth-child(1) { --escala:1.00 }  /* Gurru (circular) */
+.referencias-group .referencia-card:nth-child(2) { --escala:0.82 }  /* Kerry (muy horizontal) */
+.referencias-group .referencia-card:nth-child(3) { --escala:0.92 }  /* Dawn */
+
+@media (max-width:640px) {
+  .referencias-group { grid-template-columns:repeat(2, 1fr); gap:12px }
+  .referencia-card { height:100px; padding:14px }
+}
+
+/* ============================================================
+   CÓMO PEDIR  ← esta sección no tenía NADA de CSS
+   ============================================================ */
+.metodos {
+  padding:100px 0;
+  background:linear-gradient(180deg, var(--crema) 0%, #fffaf7 100%);
+  text-align:center;
+}
+.metodos .eyebrow,
+.metodos h2 { text-align:center }
+
+.metodos-content {
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:26px;
+  margin-top:46px;
+  align-items:stretch;
+}
+
+.metodo-card {
+  position:relative;
+  display:flex; flex-direction:column;
+  background:var(--blanco);
+  border:1px solid var(--linea);
+  border-radius:20px;
+  padding:44px 26px 30px;
+  text-align:left;
+  box-shadow:var(--sombra);
+  transition:transform .25s, box-shadow .25s, border-color .25s;
+}
+.metodo-card:hover {
+  transform:translateY(-6px);
+  box-shadow:var(--sombra-alta);
+  border-color:var(--rosa-polvo);
+}
+
+/* Número grande como marca de agua */
+.metodo-num {
+  position:absolute; top:18px; right:24px;
+  font-family:'Epilogue', sans-serif;
+  font-size:56px; font-weight:600; line-height:1;
+  color:var(--rosa-polvo);
+  opacity:.55;
+  pointer-events:none;
+}
+
+/* Línea rosa decorativa arriba de cada tarjeta */
+.metodo-card::before {
+  content:""; position:absolute; top:0; left:26px; right:26px; height:3px;
+  background:linear-gradient(90deg, var(--rosa), var(--rosa-polvo));
+  border-radius:0 0 3px 3px;
+}
+
+.metodo-card h3 { font-size:19px; color:var(--titulo); margin-bottom:10px; line-height:1.3; padding-right:52px }
+.metodo-card p  { font-size:14.5px; color:var(--texto-suave); margin:0 }
+
+@media (max-width:900px) { .metodos-content { grid-template-columns:1fr; gap:18px } }
+
+/* ============================================================
+   FOOTER  ← también estaba sin estilos
+   ============================================================ */
+.footer { background:var(--rosa-fondo); padding:70px 0 28px; color:var(--texto) }
+
+.footer-content {
+  display:grid;
+  grid-template-columns:1.6fr 1fr 1fr;
+  gap:40px;
+  padding-bottom:44px;
+  border-bottom:1px solid rgba(124,86,81,.14);
+}
+
+.footer .link h3 {
+  font-size:13px; font-weight:600;
+  letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--titulo); margin-bottom:16px;
+}
+.footer .footer-marca {
+  font-size:20px; letter-spacing:0; text-transform:none;
+  font-weight:500; line-height:1.3; margin-bottom:10px;
+}
+.footer .footer-desc { font-size:14.5px; color:var(--texto-suave); max-width:36ch }
+
+.footer .link a {
+  display:block;
+  font-size:14.5px; color:var(--texto);   /* antes salían azul/morado por defecto */
+  margin-bottom:9px;
+  width:fit-content;
+  border-bottom:1px solid transparent;
+  transition:color .2s, border-color .2s, transform .2s;
+}
+.footer .link a:hover {
+  color:var(--vino);
+  border-bottom-color:var(--rosa);
+  transform:translateX(3px);
+}
+
+.footer-copy {
+  text-align:center; padding-top:24px;
+  font-size:12.5px; color:var(--texto-suave); letter-spacing:.3px;
+}
+
+@media (max-width:820px) {
+  .footer-content { grid-template-columns:1fr 1fr; gap:32px }
+  .footer .link:first-child { grid-column:1 / -1 }
+}
+@media (max-width:520px) {
+  .footer-content { grid-template-columns:1fr; gap:28px }
+  .footer .link:first-child { grid-column:auto }
+}
+
+/* ============================================================
+   RESPONSIVE GENERAL
+   ============================================================ */
+@media (max-width: 991px) {
+  .header { background-position: center 30% }
+  .header::before { background: linear-gradient(to bottom, rgba(240,205,220,0.10) 0%, rgba(240,205,220,0.18) 30%, rgba(240,205,220,0.54) 56%, rgba(242,210,224,0.82) 100%) }
+  .header-content { flex-direction:column; justify-content:flex-end; align-items:flex-start; padding-top:28vh; padding-bottom:70px; gap:22px }
+  .header-texto { padding:0; max-width:100% }
+  .header-texto h1 { font-size: clamp(52px, 12vw, 104px) }
+  .promo-inner { flex-direction:column; text-align:center }
+  .promo-texto .divisor--izq { margin-left:auto; margin-right:auto }
+}
+
+@media (max-width:600px) {
+  .menu { padding:22px 20px; position:relative }
+  .menu-label { display:flex }
+  .navbar { display:none }
+  #menu:checked + .menu-label + .navbar { display:block; background-color:var(--blanco); padding:20px 10px; position:absolute; top:74px; right:20px; border-radius:12px; box-shadow:0 18px 36px rgba(124,86,81,0.16); z-index:30 }
+  .navbar ul { flex-direction:column; gap:16px }
+  .navbar ul li a { padding:10px 20px; color:var(--titulo); display:block; border-bottom:1px solid rgba(124,86,81,0.06) }
+  .navbar ul li a:hover { color:var(--vino) }
+  .header-content { padding-top:24vh; align-items:center }
+  .header-texto h1 { font-size: clamp(48px, 10.5vw, 86px) }
+  .productos, .referencias, .metodos, .promo { padding:70px 0 }
+}
