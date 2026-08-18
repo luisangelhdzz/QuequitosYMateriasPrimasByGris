@@ -1,9 +1,3 @@
-/* ============================================================
-   QUEQUITOS Y MATERIAS PRIMAS by Gris — estilo pastelería elegante / romántico
-   Fuentes: Epilogue (títulos, marca y nombres de producto)
-            y Poppins (texto corrido). Merriweather queda cargada
-            como respaldo por si se quiere volver al serif.
-   ============================================================ */
 :root {
   /* Fondos */
   --crema:        #fdf8f4;
@@ -35,24 +29,16 @@ body { font-family: 'Poppins', sans-serif; font-weight:300; background-color:var
 
 .container { max-width:1180px; margin:0 auto; width:100%; padding-left:24px; padding-right:24px }
 
-/* ------------------------------------------------------------
-   TIPOGRAFÍA
-   CORRECCIÓN: antes h1 y h2 eran color:var(--crema) — crema sobre
-   fondo crema, por eso los títulos de sección no se veían.
-   Ahora el color por defecto es --titulo y solo el h1 del header
-   (que va sobre foto) se pinta de blanco.
-   ------------------------------------------------------------ */
 h1, h2 { font-family:'Epilogue','Merriweather', serif; font-weight:500; color:var(--titulo) }
 h3     { font-family:'Epilogue','Merriweather', serif; font-weight:500; color:var(--titulo) }
 
 h1{
   text-wrap:balance;
-  text-transform:uppercase; 
-   line-height:1.5em; 
+  text-transform:uppercase;
+   line-height:1.5em;
    letter-spacing:8px;
 }
 
-/* Encabezado de sección reutilizable */
 .eyebrow {
   display:block;
   font-family:'Poppins', sans-serif;
@@ -74,9 +60,25 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
    HEADER
    ============================================================ */
 .header {
-  position: relative; min-height:100vh; display:flex; flex-direction:column;
+  position: relative;
+  display:flex; flex-direction:column;
+  overflow:hidden;
+
+  /* 100svh = "small viewport height". En el móvil, al aparecer y
+     desaparecer la barra del navegador, 100vh cambia de valor y el
+     header se re-dimensiona: la foto se re-recorta y parece que salta.
+     Con svh la altura se queda fija. La línea de 100vh es el respaldo
+     para navegadores viejos. */
+  min-height:100vh;
+  min-height:100svh;
+
   background-image: linear-gradient(110deg, rgba(94,50,53,0.44) 0%, rgba(172,119,123,0.28) 26%, rgba(200,158,158,0.16) 42%, rgba(255,255,255,0.04) 100%), url("img/hero-pastel_4.jpg");
-  background-size: cover; background-position: center right; background-repeat:no-repeat; overflow:hidden;
+  background-size: cover;
+  /* antes: center right. Anclada a la derecha, al cambiar el ancho de la
+     ventana el recorte se desplazaba muchísimo hacia los lados. Centrada,
+     la foto crece y encoge desde el centro y el movimiento casi no se nota. */
+  background-position: center center;
+  background-repeat:no-repeat;
 }
 
 .header::before { content:""; position:absolute; inset:0; background: linear-gradient(100deg, rgba(181,120,124,0.38) 0%, rgba(181,120,124,0.20) 24%, rgba(60,40,38,0.10) 44%, rgba(20,20,20,0.04) 58%, rgba(20,20,20,0) 84%); }
@@ -96,10 +98,35 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .menu-label span { display:block; height:1.5px; width:100%; background:var(--titulo) }
 
 .header-content { flex:1; display:flex; align-items:center; justify-content:space-between; gap:clamp(24px,4vw,60px); padding:120px clamp(30px,5vw,80px) 90px }
-.header-texto { flex:1 1 0; max-width:620px; display:flex; flex-direction:column; justify-content:center }
+.header-texto { flex:1 1 0; max-width:1000px; display:flex; flex-direction:column; justify-content:center }
 .header-texto .eyebrow { color:var(--rosa-oscuro); letter-spacing:5px; margin-bottom:18px }
 
-.header-texto h1 { font-size: clamp(72px, 12vw, 220px); line-height:.96; margin-bottom:30px; font-weight:500; color:#ffffff; text-shadow:none; letter-spacing:-4px }
+.header-texto h1 {
+  /* Ojo: el título tiene 5 palabras y la más larga ("QUEQUITOS") mide
+     ~5.5em. A 172px medía 953px dentro de una columna de 620px: por eso
+     se desbordaba y quedaba en 5 renglones. Este tamaño sí entra. */
+  font-size: clamp(38px, 7.6vw, 118px);
+  line-height:1.0;
+  margin-bottom:30px;
+  font-weight:500;
+  color:#ffffff;
+  text-shadow:none;
+  letter-spacing:-.02em;   /* en em para que escale con el tamaño */
+  /* 'balance' no funciona con las letras partidas en spans: lo apagamos */
+  text-wrap: normal;
+}
+
+/* ------------------------------------------------------------
+   ANIMACIÓN LETRA POR LETRA — versión corregida
+
+   El problema anterior: cada letra era un inline-block suelto, así que
+   el navegador podía cortar la línea EN MEDIO de una palabra
+   ("Queq / uitos"), y los spans que contenían un espacio medían 0px,
+   por lo que las palabras se pegaban ("byGris").
+
+   Solución: cada palabra va envuelta en .word (inline-block + nowrap)
+   y los espacios vuelven a ser texto normal entre palabras.
+   ------------------------------------------------------------ */
 .header-texto h1 span { font-style:italic; font-weight:300 }
 .header-texto h1 em { font-style:italic; font-weight:300; display:block }
 
@@ -115,7 +142,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .btn-1--claro { background-color:var(--blanco); color:var(--titulo) }
 .btn-1--claro:hover { background-color:var(--crema); color:var(--titulo) }
 
-/* Botón dentro de cada tarjeta de producto */
 .btn-pedir {
   display:inline-block; width:100%; margin-top:auto;
   padding:11px 18px; border-radius:999px;
@@ -159,13 +185,12 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .productos-content { position:relative; z-index:1; text-align:center }
 .txt-p { font-size:15px; color:var(--texto-suave); margin-bottom:52px }
 
-/* 3 columnas fijas en escritorio */
 .productos-group,
 .extra-products.show {
   display:grid;
   grid-template-columns:repeat(3, 1fr);
   gap:28px;
-  align-items:stretch;      /* todas las tarjetas de la fila miden igual */
+  align-items:stretch;
   justify-items:stretch;
   margin-top:18px;
 }
@@ -179,7 +204,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   background:var(--blanco); padding:18px; border-radius:16px; text-align:center;
   border:1px solid var(--linea);
   box-shadow:var(--sombra);
-  width:100%; max-width:none;   /* antes 280px: impedía llenar la columna */
+  width:100%; max-width:none;
   height:100%;
   transition:transform .25s, box-shadow .25s;
 }
@@ -189,8 +214,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .producto-card p { color:var(--texto-suave); margin-bottom:14px; font-size:15px }
 .producto-card .producto-unidad { color:var(--texto); font-weight:500; font-size:13px }
 
-/* La imagen ocupa siempre la misma caja: sin esto, object-fit:cover
-   no hace nada (necesita altura) y las tarjetas quedan desiguales. */
 .producto-card img {
   width:100%; max-width:none;
   aspect-ratio:4 / 3;
@@ -209,7 +232,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 .productos-content #ver-mas { display:inline-block !important; margin:36px auto 0; text-align:center }
 
-/* 2 por fila en tablet, 1 en móvil */
 @media (max-width:900px) {
   .productos-group,
   .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:20px }
@@ -255,7 +277,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 @media (max-width:760px) { .promo-foto--2, .promo-foto--3 { transform:none } }
 
 /* ============================================================
-   REFERENCIAS — logos uniformes
+   REFERENCIAS
    ============================================================ */
 .referencias { padding:100px 0; background: linear-gradient(180deg, rgba(255,255,255,0.18) 0%, rgba(236,214,209,0.34) 100%), var(--nude) }
 .referencias-content { text-align:center }
@@ -268,7 +290,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   padding:0 20px;
 }
 
-/* Celda idéntica para los tres logos */
 .referencia-card {
   display:flex; align-items:center; justify-content:center;
   height:130px; padding:20px 24px;
@@ -292,11 +313,9 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 }
 .referencia-card:hover img { filter:none; opacity:1; transform:scale(var(--escala, 1)) }
 
-/* Ajuste óptico: misma altura NO significa mismo peso visual.
-   Sube o baja estos valores hasta que los tres se vean iguales. */
-.referencias-group .referencia-card:nth-child(1) { --escala:1.00 }  /* Gurru (circular) */
-.referencias-group .referencia-card:nth-child(2) { --escala:0.82 }  /* Kerry (muy horizontal) */
-.referencias-group .referencia-card:nth-child(3) { --escala:0.92 }  /* Dawn */
+.referencias-group .referencia-card:nth-child(1) { --escala:1.00 }
+.referencias-group .referencia-card:nth-child(2) { --escala:0.82 }
+.referencias-group .referencia-card:nth-child(3) { --escala:0.92 }
 
 @media (max-width:640px) {
   .referencias-group { grid-template-columns:repeat(2, 1fr); gap:12px }
@@ -304,7 +323,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 }
 
 /* ============================================================
-   CÓMO PEDIR  ← esta sección no tenía NADA de CSS
+   CÓMO PEDIR
    ============================================================ */
 .metodos {
   padding:100px 0;
@@ -339,7 +358,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   border-color:var(--rosa-polvo);
 }
 
-/* Número grande como marca de agua */
 .metodo-num {
   position:absolute; top:18px; right:24px;
   font-family:'Epilogue', sans-serif;
@@ -349,7 +367,6 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   pointer-events:none;
 }
 
-/* Línea rosa decorativa arriba de cada tarjeta */
 .metodo-card::before {
   content:""; position:absolute; top:0; left:26px; right:26px; height:3px;
   background:linear-gradient(90deg, var(--rosa), var(--rosa-polvo));
@@ -362,7 +379,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 @media (max-width:900px) { .metodos-content { grid-template-columns:1fr; gap:18px } }
 
 /* ============================================================
-   FOOTER  ← también estaba sin estilos
+   FOOTER
    ============================================================ */
 .footer { background:var(--rosa-fondo); padding:70px 0 28px; color:var(--texto) }
 
@@ -387,7 +404,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 .footer .link a {
   display:block;
-  font-size:14.5px; color:var(--texto);   /* antes salían azul/morado por defecto */
+  font-size:14.5px; color:var(--texto);
   margin-bottom:9px;
   width:fit-content;
   border-bottom:1px solid transparent;
@@ -417,11 +434,12 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
    RESPONSIVE GENERAL
    ============================================================ */
 @media (max-width: 991px) {
-  .header { background-position: center 30% }
-  .header::before { background: linear-gradient(to bottom, rgba(240,205,220,0.10) 0%, rgba(240,205,220,0.18) 30%, rgba(240,205,220,0.54) 56%, rgba(242,210,224,0.82) 100%) }
-  .header-content { flex-direction:column; justify-content:flex-end; align-items:flex-start; padding-top:28vh; padding-bottom:70px; gap:22px }
+  /* La foto se ve igual que en escritorio: se hereda el mismo velo del
+     header, sin el degradado rosa que tapaba la imagen. */
+  /* la posición ya está centrada arriba; aquí no hace falta cambiarla */
+  .header-content { flex-direction:column; justify-content:center; align-items:flex-start; padding-top:140px; padding-bottom:70px; gap:22px }
   .header-texto { padding:0; max-width:100% }
-  .header-texto h1 { font-size: clamp(52px, 12vw, 104px) }
+  .header-texto h1 { font-size: clamp(46px, 10.5vw, 96px) }
   .promo-inner { flex-direction:column; text-align:center }
   .promo-texto .divisor--izq { margin-left:auto; margin-right:auto }
 }
@@ -434,7 +452,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   .navbar ul { flex-direction:column; gap:16px }
   .navbar ul li a { padding:10px 20px; color:var(--titulo); display:block; border-bottom:1px solid rgba(124,86,81,0.06) }
   .navbar ul li a:hover { color:var(--vino) }
-  .header-content { padding-top:24vh; align-items:center }
-  .header-texto h1 { font-size: clamp(48px, 10.5vw, 86px) }
+  .header-content { padding-top:120px; align-items:flex-start }
+  .header-texto h1 { font-size: clamp(40px, 14.2vw, 78px) }
   .productos, .referencias, .metodos, .promo { padding:70px 0 }
 }
