@@ -22,7 +22,12 @@
        aparece después: eso es lo que se veía como si el fondo "se moviera". -->
   <link rel="preload" as="image" href="img/hero-pastel_4.jpg" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <!-- El ?v=1 es un "rompe-cachés": el navegador guarda style.css y script.js
+       durante días, así que después de publicar cambios seguías viendo la
+       versión vieja. Al subir la versión (v=2, v=3...) el navegador se ve
+       obligado a bajar el archivo nuevo.
+       >>> SUBE ESTE NÚMERO cada vez que edites style.css o script.js <<< -->
+  <link rel="stylesheet" href="style.css?v=1" />
 </head>
 <body>
 
@@ -183,8 +188,8 @@
     <p class="footer-copy">© <span id="anio"></span> Quequitos y Materias Primas by Gris</p>
   </footer>
 
-  <script src="config.js"></script>
-  <script src="productos.js"></script>
-  <script src="script.js"></script>
+  <script src="config.js?v=1"></script>
+  <script src="productos.js?v=1"></script>
+  <script src="script.js?v=1"></script>
 </body>
 </html>
