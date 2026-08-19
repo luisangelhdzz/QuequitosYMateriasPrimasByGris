@@ -236,10 +236,36 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   .productos-group,
   .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:20px }
 }
+/* En celular se mantienen DOS por fila: la tarjeta y todo lo de adentro
+   se achican para que quepan sin apretarse. */
 @media (max-width:560px) {
   .productos-group,
-  .extra-products.show { grid-template-columns:1fr; gap:18px }
-  .producto-card { padding:14px }
+  .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:12px }
+
+  .producto-card { padding:10px 10px 12px; border-radius:14px }
+  .producto-card img,
+  .producto-img { border-radius:10px }
+  .producto-card h3 { font-size:14px; margin:10px 0 4px; line-height:1.25 }
+  .producto-card p { font-size:13px; margin-bottom:10px }
+  .producto-card .producto-unidad { font-size:11px }
+
+  .btn-pedir,
+  .producto-agotado {
+    padding:9px 8px;
+    font-size:9px;
+    letter-spacing:.8px;
+  }
+}
+
+/* Pantallas muy angostas (iPhone SE y similares): se aprieta un poco más
+   el texto para que "Pedir por WhatsApp" no se parta feo. */
+@media (max-width:360px) {
+  .productos-group,
+  .extra-products.show { gap:9px }
+  .producto-card { padding:8px 8px 10px }
+  .producto-card h3 { font-size:13px }
+  .btn-pedir,
+  .producto-agotado { font-size:8.5px; letter-spacing:.4px; padding:9px 5px }
 }
 
 /* ============================================================
