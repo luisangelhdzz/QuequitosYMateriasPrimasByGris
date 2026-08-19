@@ -8,7 +8,7 @@ const CONFIG = {
   nombreNegocio: "Quequitos y Materias Primas by Gris", // nombre mostrado en la página y pestaña
 
   // Número de WhatsApp SIN espacios, SIN "+", con código de país.
-  whatsapp: "528129016051",
+  whatsapp: "528129016051",   // aquí llegan los pedidos del catálogo
 
   // Mensaje que se completa con el nombre del producto al pedir.
   mensajeWhatsapp: (producto) =>
@@ -18,11 +18,16 @@ const CONFIG = {
     "Hola, vi su catálogo en línea y quisiera más información.",
 
   ciudad: "Saltillo, Coahuila",
-  telefonoTexto: "+52 81 2901 6051",
 
-  facebook: "https://www.facebook.com/luis.angel.hernandez.692401/",
+  // Dirección del local para el mapa de la sección "Pasión por la repostería".
+  // Escríbela como la buscarías en Google Maps: calle, número, colonia, ciudad.
+  // Entre más exacta, mejor cae el pin.
+  direccion: "calle Pablo Neruda #1124, Col. Chapultepec, Saltillo, Coahuila",
+  telefonoTexto: "+52 844 175 6301",   // teléfono público del negocio
+
+  facebook: "https://www.facebook.com/profile.php?id=100063769861712",
   instagram: "https://www.instagram.com/luisangelhdzz/",
 
   // Cuántos productos se muestran de entrada antes de "Ver más".
-  productosVisibles: 10,
+  productosVisibles: 9,
 };

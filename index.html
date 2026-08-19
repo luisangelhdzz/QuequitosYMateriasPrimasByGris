@@ -93,11 +93,21 @@
         </p>
         <a href="#" id="promoWhatsapp" target="_blank" rel="noopener" class="btn-1 btn-1--claro">Cotizar por WhatsApp</a>
       </div>
-      <div class="promo-galeria">
-        <div class="promo-foto promo-foto--1"><span>🎂</span></div>
-        <div class="promo-foto promo-foto--2"><span>🍫</span></div>
-        <div class="promo-foto promo-foto--3"><span>🧁</span></div>
-        <div class="promo-foto promo-foto--4"><span>🍓</span></div>
+      <!-- Mapa del local. La dirección se toma de config.js (CONFIG.direccion),
+           el script arma solo el enlace de Google Maps. -->
+      <div class="promo-mapa">
+        <div class="mapa-marco">
+          <iframe
+            id="mapaLocal"
+            title="Ubicación del local"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            allowfullscreen></iframe>
+        </div>
+        <div class="mapa-pie">
+          <span class="mapa-direccion" id="mapaDireccion">Saltillo, Coahuila</span>
+          <a href="#" id="mapaComoLlegar" target="_blank" rel="noopener" class="mapa-link">Cómo llegar</a>
+        </div>
       </div>
     </div>
   </section>
@@ -105,7 +115,6 @@
   <!-- ============ REFERENCIAS ============ -->
   <section class="referencias" id="referencias">
     <div class="referencias-content container">
-      <span class="eyebrow">Nos recomiendan</span>
       <h2>Referencias</h2>
       <span class="divisor"></span>
       <p class="txt-p">Marcas e insumos con los que trabajamos.</p>
@@ -168,7 +177,6 @@
       <div class="link">
         <h3>Síguenos</h3>
         <a href="#" id="footerFacebook" target="_blank" rel="noopener noreferrer">Facebook</a>
-        <a href="#" id="footerInstagram" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="#" id="footerWhatsapp" target="_blank" rel="noopener">WhatsApp</a>
       </div>
     </div>

@@ -56,6 +56,30 @@ function aplicarConfig() {
   if (footerInstagram) footerInstagram.href = CONFIG.instagram;
   const anio = document.getElementById("anio");
   if (anio) anio.textContent = new Date().getFullYear();
+
+  aplicarMapa();
+}
+
+/* ============================================================
+   MAPA DEL LOCAL
+   Usa el modo "embed" de Google Maps, que no necesita API key ni
+   cuenta de Google. Solo depende de CONFIG.direccion.
+   ============================================================ */
+function aplicarMapa() {
+  const direccion = (CONFIG.direccion || CONFIG.ciudad || "").trim();
+  if (!direccion) return;
+
+  const consulta = encodeURIComponent(direccion);
+
+  const iframe = document.getElementById("mapaLocal");
+  if (iframe) iframe.src = `https://www.google.com/maps?q=${consulta}&z=16&output=embed`;
+
+  const texto = document.getElementById("mapaDireccion");
+  if (texto) texto.textContent = direccion;
+
+  // "Cómo llegar" abre Google Maps con la ruta ya cargada
+  const link = document.getElementById("mapaComoLlegar");
+  if (link) link.href = `https://www.google.com/maps/dir/?api=1&destination=${consulta}`;
 }
 
 const menuCheckbox = document.getElementById("menu");
