@@ -1,0 +1,17 @@
+# Entornos de Python (pesan mucho y no sirven en el sitio publicado)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Temporales
+*.log
+*.tmp

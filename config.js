@@ -8,7 +8,7 @@ const CONFIG = {
   nombreNegocio: "Quequitos y Materias Primas by Gris", // nombre mostrado en la página y pestaña
 
   // Número de WhatsApp SIN espacios, SIN "+", con código de país.
-  whatsapp: "528129016051",   // aquí llegan los pedidos del catálogo
+  whatsapp: "528441756301",   // aquí llegan los pedidos del catálogo
 
   // Mensaje que se completa con el nombre del producto al pedir.
   mensajeWhatsapp: (producto) =>
