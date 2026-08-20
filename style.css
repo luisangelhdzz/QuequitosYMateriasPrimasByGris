@@ -134,7 +134,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   font-size:11px;
   letter-spacing:2.2px;
   text-transform:uppercase;
-  color:#ffffff;
+  color:#060606;
   font-weight:700;
   padding:8px 0 6px;
   border-bottom:1px solid transparent;
@@ -143,8 +143,8 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   opacity:.96;
 }
 .menu .navbar ul li a:hover {
-  color:#fff8f4;
-  border-bottom-color: rgba(255,255,255,0.9);
+  color:#f0a2df;
+  border-bottom-color: rgba(10, 10, 10, 0.9);
   transform:translateY(-1px);
 }
 
