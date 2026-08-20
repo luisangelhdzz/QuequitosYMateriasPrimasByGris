@@ -5,6 +5,9 @@
   --rosa-fondo:   #f6e5e2;
   --rosa-polvo:   #ecd3d0;
   --blanco:       #ffffff;
+  --pastel-rosa:  #f9e5e5;
+  --pastel-miel:  #f7e8d8;
+  --pastel-agua:  #e7efe7;
 
   /* Acentos */
   --rosa:         #d99ea2;
@@ -35,8 +38,8 @@ h3     { font-family:'Epilogue','Merriweather', serif; font-weight:500; color:va
 h1{
   text-wrap:balance;
   text-transform:uppercase;
-   line-height:1.5em;
-   letter-spacing:8px;
+  line-height:1.05em;
+  letter-spacing:2px;
 }
 
 .eyebrow {
@@ -102,17 +105,14 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .header-texto .eyebrow { color:var(--rosa-oscuro); letter-spacing:5px; margin-bottom:18px }
 
 .header-texto h1 {
-  /* Ojo: el título tiene 5 palabras y la más larga ("QUEQUITOS") mide
-     ~5.5em. A 172px medía 953px dentro de una columna de 620px: por eso
-     se desbordaba y quedaba en 5 renglones. Este tamaño sí entra. */
-  font-size: clamp(38px, 7.6vw, 118px);
-  line-height:1.0;
+  font-family:'Epilogue', 'Poppins', sans-serif;
+  font-size: clamp(48px, 7vw, 118px);
+  line-height:0.96;
   margin-bottom:30px;
-  font-weight:500;
+  font-weight:800;
   color:#ffffff;
-  text-shadow:none;
-  letter-spacing:-.02em;   /* en em para que escale con el tamaño */
-  /* 'balance' no funciona con las letras partidas en spans: lo apagamos */
+  text-shadow:0 6px 24px rgba(74, 35, 28, 0.18);
+  letter-spacing:-0.06em;
   text-wrap: normal;
 }
 
@@ -271,25 +271,41 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 /* ============================================================
    PROMO
    ============================================================ */
-.promo { position:relative; background-image: linear-gradient(120deg, rgba(255,249,247,0.50) 0%, rgba(247,224,220,0.35) 0%, rgba(244,215,209,0.25) 0%), url("img/cupcakes.avif"); background-size:cover; background-position:center; padding:100px 0; overflow:hidden }
-.promo::before { content:""; position:absolute; inset:0; background: rgba(255,255,255,0.02) }
+.promo {
+  position:relative;
+  background: linear-gradient(135deg, var(--pastel-rosa) 0%, var(--pastel-miel) 52%, var(--pastel-agua) 100%);
+  padding:100px 0;
+  overflow:hidden;
+}
+.promo::before {
+  content:"";
+  position:absolute;
+  inset:0;
+  background: radial-gradient(circle at top left, rgba(255,255,255,0.55), transparent 38%);
+}
 
 .promo-inner { position:relative; z-index:1; display:flex; align-items:center; gap:60px; padding:0 30px; flex-wrap:wrap }
 .promo-texto { flex:1 1 380px }
-.promo-texto h2 { font-size: clamp(50px, 4.9vw, 60px) ;text-transform:uppercase; line-height:1.3em; color:var(--crema) }
-.promo-texto p { font-size :24px; color:var(--crema); margin-bottom:32px; max-width:460px }
-.promo-texto p{
-  font-weight:bold;
+.promo-texto h2 {
+  font-size: clamp(50px, 4.9vw, 60px);
+  text-transform:uppercase;
+  line-height:1.3em;
+  color:var(--titulo);
+  font-weight:700;
 }
-.promo-texto h2{
-  font-weight:bold;
+.promo-texto p {
+  font-size:24px;
+  color:var(--texto);
+  margin-bottom:32px;
+  max-width:460px;
+  font-weight:600;
 }
 /* ---------- MAPA DEL LOCAL (sustituye a las tarjetas de emojis) ---------- */
 .promo-mapa {
   flex:1 1 420px;
   max-width:560px;
-  background:rgba(255,255,255,.82);
-  border:1px solid rgba(255,255,255,.7);
+  background:rgba(255,255,255,.72);
+  border:1px solid rgba(124,86,81,.12);
   border-radius:20px;
   box-shadow:var(--sombra);
   backdrop-filter:blur(4px);
@@ -517,6 +533,11 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   .navbar ul li a { padding:10px 20px; color:var(--titulo); display:block; border-bottom:1px solid rgba(124,86,81,0.06) }
   .navbar ul li a:hover { color:var(--vino) }
   .header-content { padding-top:120px; align-items:flex-start }
-  .header-texto h1 { font-size: clamp(40px, 14.2vw, 78px) }
+  .header-texto h1 {
+    font-size: clamp(46px, 14vw, 76px);
+    line-height:0.98;
+    letter-spacing:-0.05em;
+    font-weight:800;
+  }
   .productos, .referencias, .metodos, .promo { padding:70px 0 }
 }
