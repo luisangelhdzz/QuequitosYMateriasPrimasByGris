@@ -87,18 +87,89 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .header::before { content:""; position:absolute; inset:0; background: linear-gradient(100deg, rgba(181,120,124,0.38) 0%, rgba(181,120,124,0.20) 24%, rgba(60,40,38,0.10) 44%, rgba(20,20,20,0.04) 58%, rgba(20,20,20,0) 84%); }
 .header > * { position:relative; z-index:1 }
 
-.menu { position:absolute; top:18px; left:50%; transform:translateX(-50%); z-index:10; width:min(1180px, calc(100% - 32px)); display:flex; align-items:center; justify-content:space-between; padding:18px 28px; gap:20px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.18); border-radius:999px; backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); box-shadow:0 14px 30px rgba(80,43,48,0.12) }
+.menu {
+  position:absolute;
+  top:18px;
+  left:50%;
+  transform:translateX(-50%);
+  z-index:10;
+  width:min(1180px, calc(100% - 32px));
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:16px 20px 16px 18px;
+  gap:20px;
+  background:rgba(255,255,255,0.10);
+  border:1px solid rgba(255,255,255,0.22);
+  border-radius:999px;
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  box-shadow:0 18px 36px rgba(82,46,42,0.12);
+}
 
-.menu .logo img { display:block; width:52px; height:52px; object-fit:cover; border-radius:8px; border:1px solid rgba(255,255,255,0.18); box-shadow:0 8px 18px rgba(80,43,48,0.12) }
-@media (max-width:480px) { .menu .logo img { width:40px; height:40px } }
+.menu .logo {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:62px;
+  height:62px;
+  padding:6px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.26);
+  border-radius:18px;
+  box-shadow:0 10px 22px rgba(55,32,30,0.10);
+}
+
+.menu .logo img {
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  border-radius:12px;
+}
+@media (max-width:480px) { .menu .logo { width:48px; height:48px; border-radius:14px } }
 
 .menu .navbar ul { display:flex; align-items:center; gap:28px }
-.menu .navbar ul li a { font-size:11px; letter-spacing:2.2px; text-transform:uppercase; color:var(BLACK); font-weight:500; padding:8px 0 6px; border-bottom:1px solid transparent; transition: color .25s, border-color .25s, transform .2s; text-shadow:0 1px 10px rgba(50,28,23,.34) }
-.menu .navbar ul li a:hover { color:#0a0a0a; border-bottom-color: rgba(9, 9, 9, 0.8); transform:translateY(-1px) }
+.menu .navbar ul li a {
+  font-size:11px;
+  letter-spacing:2.2px;
+  text-transform:uppercase;
+  color:#ffffff;
+  font-weight:700;
+  padding:8px 0 6px;
+  border-bottom:1px solid transparent;
+  transition: color .25s, border-color .25s, transform .2s, opacity .25s;
+  text-shadow:0 2px 12px rgba(46,24,22,.30);
+  opacity:.96;
+}
+.menu .navbar ul li a:hover {
+  color:#fff8f4;
+  border-bottom-color: rgba(255,255,255,0.9);
+  transform:translateY(-1px);
+}
 
 #menu { display:none }
-.menu-label { cursor:pointer; display:none; flex-direction:column; gap:5px; width:24px }
-.menu-label span { display:block; height:1.5px; width:100%; background:var(--titulo) }
+.menu-label {
+  cursor:pointer;
+  display:none;
+  flex-direction:column;
+  justify-content:center;
+  gap:5px;
+  width:28px;
+  height:28px;
+  padding:3px 4px;
+  border-radius:10px;
+  background:rgba(255,255,255,0.14);
+  border:1px solid rgba(255,255,255,0.18);
+}
+.menu-label span {
+  display:block;
+  height:2px;
+  width:100%;
+  background:#ffffff;
+  border-radius:999px;
+  box-shadow:0 1px 4px rgba(60,36,33,0.20);
+}
 
 .header-content { flex:1; display:flex; align-items:center; justify-content:space-between; gap:clamp(24px,4vw,60px); padding:120px clamp(30px,5vw,80px) 90px }
 .header-texto { flex:1 1 0; max-width:1000px; display:flex; flex-direction:column; justify-content:center }
@@ -521,16 +592,35 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 @media (max-width:600px) {
 
-/* iPad and small tablets: make hamburger menu links black */
-@media (max-width:820px) {
-  .navbar ul li a { color: #000; }
-}
-  .menu { padding:22px 20px; position:relative }
+  .menu {
+    padding:14px 16px 14px 14px;
+    position:relative;
+    background:rgba(255,255,255,0.12);
+    border:1px solid rgba(255,255,255,0.22);
+    box-shadow:0 16px 28px rgba(73,38,33,0.12);
+  }
   .menu-label { display:flex }
   .navbar { display:none }
-  #menu:checked + .menu-label + .navbar { display:block; background-color:var(--blanco); padding:20px 10px; position:absolute; top:74px; right:20px; border-radius:12px; box-shadow:0 18px 36px rgba(124,86,81,0.16); z-index:30 }
+  #menu:checked + .menu-label + .navbar {
+    display:block;
+    background:rgba(255,255,255,0.90);
+    padding:20px 10px;
+    position:absolute;
+    top:72px;
+    right:20px;
+    border-radius:16px;
+    box-shadow:0 18px 36px rgba(124,86,81,0.18);
+    z-index:30;
+    border:1px solid rgba(124,86,81,0.08);
+  }
   .navbar ul { flex-direction:column; gap:16px }
-  .navbar ul li a { padding:10px 20px; color:var(--titulo); display:block; border-bottom:1px solid rgba(124,86,81,0.06) }
+  .navbar ul li a {
+    padding:10px 20px;
+    color:var(--titulo);
+    display:block;
+    border-bottom:1px solid rgba(124,86,81,0.06);
+    text-shadow:none;
+  }
   .navbar ul li a:hover { color:var(--vino) }
   .header-content { padding-top:120px; align-items:flex-start }
   .header-texto h1 {
