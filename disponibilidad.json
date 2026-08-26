@@ -1,0 +1,6 @@
+{
+  "_ayuda": "Productos y colores agotados. Lo mas comodo es abrir admin.html, apagar lo que se acabo y pegar aqui el resultado. Si este archivo tiene un error de sintaxis, el sitio lo ignora y muestra todo disponible.",
+  "_actualizado": "2026-08-21",
+  "agotados": [],
+  "coloresAgotados": {}
+}

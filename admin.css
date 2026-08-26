@@ -1,0 +1,177 @@
+/* ============================================================
+   PÁGINA DE EXISTENCIAS
+   Hoja aparte a propósito: es una herramienta interna y no debe
+   arrastrar el peso ni las fuentes del catálogo.
+   ============================================================ */
+
+:root {
+  --fondo:    #faf7f4;
+  --tarjeta:  #ffffff;
+  --linea:    #e7ddd8;
+  --texto:    #4a3b37;
+  --suave:    #8d7a74;
+  --vino:     #9c6a68;
+  --titulo:   #7b5651;
+  --alerta:   #c0603f;
+  --ok:       #3f7d54;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0 }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
+  line-height: 1.55;
+  -webkit-text-size-adjust: 100%;
+}
+
+.cabecera {
+  background: var(--vino);
+  color: #fff;
+  padding: 26px 20px 22px;
+  text-align: center;
+}
+.cabecera h1 { font-size: 24px; font-weight: 600; letter-spacing: -.3px }
+.cabecera p  { font-size: 13.5px; opacity: .9; margin-top: 4px }
+
+.contenedor { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px }
+
+/* --- Barra de búsqueda --- */
+.barra {
+  display: flex; align-items: center; gap: 12px;
+  flex-wrap: wrap; margin-bottom: 18px;
+}
+#buscar {
+  flex: 1 1 220px;
+  padding: 11px 15px;
+  border: 1px solid var(--linea); border-radius: 10px;
+  background: var(--tarjeta); font-size: 16px; /* 16px evita el zoom de iOS */
+  color: var(--texto); font-family: inherit;
+}
+#buscar:focus { outline: none; border-color: var(--vino) }
+.resumen { font-size: 12.5px; color: var(--suave); white-space: nowrap }
+
+/* --- Lista de productos --- */
+.lista { display: flex; flex-direction: column; gap: 12px }
+
+.fila {
+  background: var(--tarjeta);
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+.fila--agotada { background: #fbf4f1; border-color: #eccfc4 }
+
+.fila-cabeza {
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+}
+.fila-cabeza h3 { font-size: 15.5px; font-weight: 600; color: var(--titulo); line-height: 1.3 }
+.id { font-size: 11px; color: var(--suave); font-family: ui-monospace, SFMono-Regular, Menlo, monospace }
+
+/* --- Interruptor --- */
+.switch { display: flex; align-items: center; gap: 9px; cursor: pointer; flex-shrink: 0 }
+.switch input { position: absolute; opacity: 0; width: 0; height: 0 }
+.pista {
+  width: 46px; height: 27px; border-radius: 999px;
+  background: var(--alerta); position: relative;
+  transition: background-color .2s;
+}
+.pista::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 21px; height: 21px; border-radius: 50%; background: #fff;
+  transition: transform .2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,.25);
+}
+.switch input:checked + .pista { background: var(--ok) }
+.switch input:checked + .pista::after { transform: translateX(19px) }
+.switch input:focus-visible + .pista { outline: 2px solid var(--vino); outline-offset: 2px }
+.etiqueta { font-size: 12px; color: var(--suave); min-width: 52px }
+
+/* --- Grupos de color / presentación --- */
+.grupos { margin-top: 14px; display: flex; flex-direction: column; gap: 11px }
+.grupo-nombre {
+  display: block; font-size: 10.5px; text-transform: uppercase;
+  letter-spacing: 1px; color: var(--suave); margin-bottom: 6px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 7px }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 12px; border-radius: 999px;
+  border: 1px solid var(--linea); background: #fff;
+  font-family: inherit; font-size: 12.5px; color: var(--texto);
+  cursor: pointer;
+  transition: background-color .15s, border-color .15s, opacity .15s;
+}
+.chip:hover { border-color: var(--vino) }
+.chip--agotado {
+  background: #f6e7e1; border-color: #e2bcae; color: var(--alerta);
+  text-decoration: line-through; opacity: .8;
+}
+.chip:disabled { opacity: .35; cursor: not-allowed; text-decoration: none }
+
+.pizca {
+  width: 13px; height: 13px; border-radius: 50%;
+  border: 1px solid rgba(0,0,0,.18); display: inline-block;
+}
+
+.nota-fila { font-size: 11.5px; color: var(--suave); margin-top: 10px; font-style: italic }
+.vacio { color: var(--suave); text-align: center; padding: 30px 0; font-size: 14px }
+
+/* --- Salida --- */
+.salida {
+  margin-top: 28px; padding-top: 24px;
+  border-top: 1px solid var(--linea);
+}
+.salida h2 { font-size: 17px; font-weight: 600; color: var(--titulo); margin-bottom: 4px }
+.ayuda { font-size: 13px; color: var(--suave); margin-bottom: 12px }
+.ayuda code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px; background: #efe7e2; padding: 1px 5px; border-radius: 4px;
+}
+
+#json {
+  width: 100%; min-height: 190px;
+  padding: 13px 15px;
+  border: 1px solid var(--linea); border-radius: 12px;
+  background: #fffdfc; color: var(--texto);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12.5px; line-height: 1.6; resize: vertical;
+}
+#json:focus { outline: none; border-color: var(--vino) }
+
+.acciones { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap }
+.btn {
+  flex: 1 1 auto; text-align: center;
+  padding: 12px 20px; border: none; border-radius: 999px;
+  background: var(--vino); color: #fff;
+  font-family: inherit; font-size: 13.5px; font-weight: 500;
+  cursor: pointer; text-decoration: none;
+  transition: background-color .2s;
+}
+.btn:hover { background: var(--titulo) }
+.btn--claro { background: #fff; color: var(--vino); border: 1px solid var(--vino) }
+.btn--claro:hover { background: #f6ecea; color: var(--titulo) }
+
+.aviso {
+  display: block; margin-top: 10px; font-size: 12.5px; color: var(--ok);
+  opacity: 0; transition: opacity .25s;
+}
+.aviso.visible { opacity: 1 }
+
+.pasos { margin-top: 18px; font-size: 13px }
+.pasos summary { cursor: pointer; color: var(--vino); font-weight: 500; padding: 6px 0 }
+.pasos ol { margin: 10px 0 0 20px; color: var(--suave); display: flex; flex-direction: column; gap: 5px }
+.pasos b { color: var(--texto) }
+
+.pie {
+  text-align: center; font-size: 11.5px; color: var(--suave);
+  padding: 0 20px 40px; max-width: 480px; margin: 0 auto; line-height: 1.6;
+}
+
+@media (max-width: 480px) {
+  .fila-cabeza { align-items: flex-start }
+  .etiqueta { display: none }
+  .acciones .btn { flex: 1 1 100% }
+}

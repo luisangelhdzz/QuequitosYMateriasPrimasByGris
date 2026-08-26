@@ -22,12 +22,17 @@
        aparece después: eso es lo que se veía como si el fondo "se moviera". -->
   <link rel="preload" as="image" href="img/hero-pastel_4.jpg" fetchpriority="high" />
   <link href="https://fonts.googleapis.com/css2?family=Epilogue:ital,wght@0,100..900;1,100..900&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet" />
-  <!-- El ?v=1 es un "rompe-cachés": el navegador guarda style.css y script.js
+  <!-- El ?v= es un "rompe-cachés": el navegador guarda style.css y script.js
        durante días, así que después de publicar cambios seguías viendo la
-       versión vieja. Al subir la versión (v=2, v=3...) el navegador se ve
+       versión vieja. Al subir la versión (v=4, v=5...) el navegador se ve
        obligado a bajar el archivo nuevo.
-       >>> SUBE ESTE NÚMERO cada vez que edites style.css o script.js <<< -->
-  <link rel="stylesheet" href="style.css?v=1" />
+       >>> SUBE ESTE NÚMERO cada vez que edites style.css, script.js,
+           config.js o productos.js <<<
+
+       OJO: disponibilidad.json NO lleva versión. El script lo pide con
+       cache:"no-store" justamente para que marcar un producto como agotado
+       se vea de inmediato sin tener que tocar este archivo. -->
+  <link rel="stylesheet" href="style.css?v=3" />
 </head>
 <body>
 
@@ -150,18 +155,18 @@
       <div class="metodos-content">
         <div class="metodo-card">
           <span class="metodo-num">01</span>
-          <h3>Elige tus productos</h3>
-          <p>Explora el catálogo y da clic en "Pedir por WhatsApp" en cada producto que te interese.</p>
+          <h3>Arma tu carrito</h3>
+          <p>Elige tus productos, el color y la presentación que necesitas, y agrégalos al carrito.</p>
         </div>
         <div class="metodo-card">
           <span class="metodo-num">02</span>
-          <h3>Confirmamos por WhatsApp</h3>
-          <p>Te contactamos para confirmar cantidades, tiempos de entrega y forma de pago.</p>
+          <h3>Envías el pedido</h3>
+          <p>Das clic en "Hacer pedido" y se abre WhatsApp con tu lista completa ya escrita: cantidades, colores y total.</p>
         </div>
         <div class="metodo-card">
           <span class="metodo-num">03</span>
-          <h3>Pagas en efectivo o transferencia</h3>
-          <p>Cerramos el pedido directamente contigo, sin pagos en línea ni comisiones.</p>
+          <h3>Confirmamos y pagas</h3>
+          <p>Revisamos existencias contigo por WhatsApp y cierras en efectivo o transferencia. Sin pagos en línea ni comisiones.</p>
         </div>
       </div>
     </div>
@@ -188,8 +193,75 @@
     <p class="footer-copy">© <span id="anio"></span> Quequitos y Materias Primas by Gris</p>
   </footer>
 
-  <script src="config.js?v=1"></script>
-  <script src="productos.js?v=1"></script>
-  <script src="script.js?v=1"></script>
+  <!-- ============================================================
+       CARRITO
+       Botón flotante, panel lateral y modal de opciones.
+       Todo el comportamiento vive en script.js.
+       ============================================================ -->
+
+  <!-- Botón flotante con el contador de artículos -->
+  <button type="button" class="boton-carrito" id="botonCarrito" aria-label="Ver carrito">
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M6 6h15l-1.7 9.4a2 2 0 0 1-2 1.6H9.5a2 2 0 0 1-2-1.7L5.6 3.9A1 1 0 0 0 4.6 3H2"
+            fill="none" stroke="currentColor" stroke-width="1.8"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+    </svg>
+    <span class="carrito-contador" id="carritoContador">0</span>
+  </button>
+
+  <!-- Fondo oscuro detrás del panel -->
+  <div class="fondo-carrito" id="fondoCarrito"></div>
+
+  <!-- Panel lateral del carrito -->
+  <aside class="panel-carrito" id="panelCarrito" aria-label="Tu pedido">
+    <div class="carrito-encabezado">
+      <div>
+        <h3>Tu pedido</h3>
+        <span class="carrito-conteo" id="carritoConteo">0 artículos</span>
+      </div>
+      <button type="button" class="carrito-cerrar" id="carritoCerrar" aria-label="Cerrar carrito">×</button>
+    </div>
+
+    <div class="carrito-aviso" id="carritoAviso"></div>
+
+    <div class="carrito-lista" id="carritoLista"></div>
+
+    <div class="carrito-pie oculto" id="carritoPie">
+      <div class="carrito-campo">
+        <label for="clienteNombre">Tu nombre</label>
+        <input type="text" id="clienteNombre" maxlength="60" placeholder="¿A nombre de quién va el pedido?" autocomplete="name" />
+      </div>
+      <div class="carrito-campo">
+        <label for="clienteNota">Comentario <i>(opcional)</i></label>
+        <textarea id="clienteNota" rows="2" maxlength="200" placeholder="Fecha en que lo necesitas, si pasas por él, etc."></textarea>
+      </div>
+
+      <div class="carrito-total">
+        <span>Total</span>
+        <b id="carritoTotal">$0.00</b>
+      </div>
+
+      <button type="button" class="btn-1 carrito-pedir" id="carritoPedir">Hacer pedido por WhatsApp</button>
+      <button type="button" class="carrito-vaciar" id="carritoVaciar">Vaciar carrito</button>
+      <p class="carrito-legal">
+        El pedido se confirma por WhatsApp. No se cobra nada en línea.
+      </p>
+    </div>
+  </aside>
+
+  <!-- Modal para elegir color, tamaño y cantidad -->
+  <div class="modal-opciones" id="modalOpciones" role="dialog" aria-modal="true" aria-label="Elegir opciones">
+    <div class="modal-fondo" id="modalFondo"></div>
+    <div class="modal-caja">
+      <button type="button" class="modal-cerrar" id="modalCerrar" aria-label="Cerrar">×</button>
+      <div class="modal-cuerpo" id="modalCuerpo"></div>
+    </div>
+  </div>
+
+  <script src="config.js?v=3"></script>
+  <script src="productos.js?v=3"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>

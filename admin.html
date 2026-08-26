@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Existencias — Quequitos by Gris</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=3" />
+  <link rel="stylesheet" href="admin.css?v=1" />
+</head>
+<body>
+
+  <header class="cabecera">
+    <h1>Existencias</h1>
+    <p>Apaga lo que se acabó. Al final copias el resultado y lo pegas en GitHub.</p>
+  </header>
+
+  <main class="contenedor">
+
+    <div class="barra">
+      <input type="search" id="buscar" placeholder="Buscar producto…" autocomplete="off" />
+      <span class="resumen" id="resumen"></span>
+    </div>
+
+    <div id="lista" class="lista"></div>
+
+    <section class="salida">
+      <h2>Resultado</h2>
+      <p class="ayuda">
+        Esto es el contenido completo de <code>disponibilidad.json</code>.
+        Cópialo y pégalo en GitHub reemplazando todo lo que haya en ese archivo.
+      </p>
+
+      <textarea id="json" readonly spellcheck="false"></textarea>
+
+      <div class="acciones">
+        <button type="button" id="copiar" class="btn">Copiar</button>
+        <a id="editarEnGitHub" class="btn btn--claro" target="_blank" rel="noopener">Abrir en GitHub</a>
+      </div>
+      <span class="aviso" id="aviso"></span>
+
+      <details class="pasos">
+        <summary>Cómo se pega en GitHub (paso a paso)</summary>
+        <ol>
+          <li>Dale a <b>Copiar</b> aquí arriba.</li>
+          <li>Abre <b>Abrir en GitHub</b>. Si te pide iniciar sesión, entra con tu cuenta.</li>
+          <li>Pícale al lápiz ✏️ para editar el archivo.</li>
+          <li>Selecciona todo lo que hay dentro y pega encima.</li>
+          <li>Hasta abajo, <b>Commit changes</b>.</li>
+          <li>En menos de un minuto el sitio ya muestra los cambios.</li>
+        </ol>
+      </details>
+    </section>
+  </main>
+
+  <footer class="pie">
+    Esta página no cambia nada por sí sola: solo arma el texto.
+    El cambio se aplica cuando lo guardas en GitHub.
+  </footer>
+
+  <script src="productos.js?v=3"></script>
+  <script src="admin.js?v=1"></script>
+</body>
+</html>

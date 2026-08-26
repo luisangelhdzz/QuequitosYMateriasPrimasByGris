@@ -10,7 +10,7 @@ const CONFIG = {
   // Número de WhatsApp SIN espacios, SIN "+", con código de país.
   whatsapp: "528441756301",   // aquí llegan los pedidos del catálogo
 
-  // Mensaje que se completa con el nombre del producto al pedir.
+  // Mensaje al pedir UN SOLO producto directo desde su tarjeta.
   mensajeWhatsapp: (producto) =>
     `Hola, me gustaría hacer un pedido de: *${producto}*. ¿Me pueden confirmar disponibilidad y precio?`,
 
@@ -30,4 +30,38 @@ const CONFIG = {
 
   // Cuántos productos se muestran de entrada antes de "Ver más".
   productosVisibles: 9,
+
+  // ============================================================
+  // PEDIDOS
+  // ============================================================
+
+  // Prefijo del folio. Cada pedido genera algo como QG-260821-4831.
+  folioPrefijo: "QG",
+
+  // Pedir el nombre del cliente antes de mandar el pedido.
+  pedirNombreCliente: true,
+
+  // ------------------------------------------------------------
+  // BACKEND (tu API en Java + PostgreSQL)
+  // ------------------------------------------------------------
+  // Déjalo en "" mientras no tengas el backend arriba: el pedido se
+  // manda SOLO por WhatsApp y la página funciona igual de bien.
+  //
+  // Cuando publiques tu API, pon aquí la URL del endpoint que recibe
+  // los pedidos, por ejemplo:
+  //   apiPedidos: "https://api.quequitosbygris.com/api/pedidos",
+  //
+  // IMPORTANTE:
+  //  · Tiene que ser HTTPS. Si la página está en HTTPS (GitHub Pages,
+  //    Vercel, Cloudflare) el navegador BLOQUEA llamadas a http:// .
+  //  · Tu backend debe permitir CORS desde el dominio de la página.
+  //  · Si la API falla o está apagada, el pedido igual se manda por
+  //    WhatsApp. Nunca se pierde una venta por culpa del servidor.
+  apiPedidos: "",
+
+  // Opcional: token que se manda en el header "Authorization" para que
+  // no cualquiera pueda insertar pedidos falsos en tu base de datos.
+  // Ojo: al ser una página estática, este valor es visible para quien
+  // revise el código. Sirve para filtrar bots, no como seguridad real.
+  apiToken: "",
 };
