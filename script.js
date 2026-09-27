@@ -7,7 +7,7 @@
    una copia en JSON a tu backend de Java/PostgreSQL.
    ============================================================ */
 
-const BREAKPOINT_MOVIL = 600;
+const BREAKPOINT_MOVIL = 870;   // debe coincidir con el media query de la barra en style.css
 const IMAGENES_PRODUCTOS = [
   "img/foto_1.jpg","img/foto_2.jpg","img/foto_3.jpg","img/foto_4.jpg",
   "img/foto_5.jpg","img/foto_6.jpg","img/foto_8.jpg","img/foto_9.jpg",
@@ -134,7 +134,7 @@ const Carrito = {
         productoId,
         nombre: producto.nombre,
         unidad: producto.unidad,
-        imagen: producto.imagen || IMAGENES_PRODUCTOS[PRODUCTOS.indexOf(producto)] || "",
+        imagen: imagenDe(producto),
         emoji: producto.emoji || "🧁",
         opciones: seleccion || {},
         nota: (nota || "").trim(),
@@ -178,17 +178,57 @@ const Carrito = {
 
 /* ============================================================
    TARJETAS DE PRODUCTO
+   ------------------------------------------------------------
+   La foto va a sangre (de orilla a orilla de la tarjeta) y el
+   botón flota encima de ella. Cuando el producto ya está en el
+   carrito, ese botón se convierte en un contador − 2 + para
+   poder ajustar la cantidad sin abrir nada.
    ============================================================ */
-function productoCardHTML(p, index) {
-  const imagenSrc = p.imagen || IMAGENES_PRODUCTOS[index] || "";
+
+/* Cuántas piezas de este producto hay en el carrito, sumando todas
+   sus variantes (rosa + azul + verde = un solo número). */
+function cantidadEnCarrito(productoId) {
+  return Carrito.items
+    .filter((it) => it.productoId === productoId)
+    .reduce((s, it) => s + it.cantidad, 0);
+}
+
+/* La línea de carrito de un producto SIN variantes: siempre es una sola,
+   así que el contador de la tarjeta puede apuntar directo a ella. */
+function claveSimple(productoId) {
+  return Carrito.clave(productoId, {}, "");
+}
+
+const ICONO_CARRITO = `<svg viewBox="0 0 24 24" aria-hidden="true" class="icono-mini">
+  <path d="M5 6h15l-1.6 8.6a2 2 0 0 1-2 1.6H9.2a2 2 0 0 1-2-1.7L5.4 4.2A1 1 0 0 0 4.4 3.4H2.2"
+        fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="9.6" cy="19.4" r="1.3" fill="currentColor"/>
+  <circle cx="17" cy="19.4" r="1.3" fill="currentColor"/>
+</svg>`;
+
+const ICONO_WA = `<svg viewBox="0 0 24 24" aria-hidden="true">
+  <path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.46 1.32 4.96L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.22 8.22 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.2 8.2 0 0 1 8.24 8.24c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.78.97-.15.16-.29.18-.53.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.11-.22-.17-.47-.29Z"/>
+</svg>`;
+
+/* La foto de respaldo se elige por la posición del producto en PRODUCTOS,
+   NO por su posición en la lista que se está pintando. Si se usara la
+   segunda, al filtrar por categoría las fotos se recorrerían y cada
+   producto aparecería con la imagen de otro. */
+function imagenDe(p) {
+  return p.imagen || IMAGENES_PRODUCTOS[PRODUCTOS.indexOf(p)] || "";
+}
+
+function productoCardHTML(p) {
+  const imagenSrc = imagenDe(p);
   const imagen = imagenSrc
     ? `<img src="${esc(imagenSrc)}" alt="${esc(p.nombre)}" loading="lazy" />`
     : `<div class="producto-img"><span>${esc(p.emoji || "🧁")}</span></div>`;
 
   const tieneOpciones = Array.isArray(p.opciones) && p.opciones.length > 0;
+  const enCarrito = cantidadEnCarrito(p.id);
 
-  // Vistazo de los colores disponibles, para que se note desde la
-  // tarjeta que el producto viene en varios tonos.
+  // Vistazo de los colores, para que se note desde la tarjeta que el
+  // producto viene en varios tonos.
   let muestrasColor = "";
   const grupoColor = (p.opciones || []).find((g) => g.tipo === "color");
   if (grupoColor) {
@@ -204,43 +244,368 @@ function productoCardHTML(p, index) {
   // "Desde $X" cuando alguna variante sube el precio.
   const subeElPrecio = (p.opciones || []).some((g) => g.valores.some((v) => v.precio));
   const etiquetaPrecio = subeElPrecio
-    ? `<span class="precio-desde">Desde</span> ${formatoPrecio(p.precio)}`
+    ? `<span class="precio-desde">Desde</span>${formatoPrecio(p.precio)}`
     : formatoPrecio(p.precio);
 
-  let acciones;
+  /* --- La pastilla que flota sobre la foto --- */
+  let pastilla;
   if (!p.disponible) {
-    acciones = `<span class="producto-agotado">Agotado</span>`;
+    pastilla = `<span class="pastilla pastilla--agotado">Agotado</span>`;
   } else if (tieneOpciones) {
-    acciones = `
-      <button type="button" class="btn-pedir" data-abrir-opciones="${esc(p.id)}">Elegir opciones</button>
-      <a href="${waLink(CONFIG.mensajeWhatsapp(p.nombre))}" target="_blank" rel="noopener" class="link-pedir-ya">o pedir directo por WhatsApp</a>`;
+    // Con variantes el contador sería ambiguo (¿el rosa o el azul?),
+    // así que el botón siempre manda al modal y la cuenta va en la esquina.
+    pastilla = `<button type="button" class="pastilla" data-abrir-opciones="${esc(p.id)}">
+        ${ICONO_CARRITO}<span>${enCarrito ? "Agregar otro" : "Elegir"}</span>
+      </button>`;
+  } else if (enCarrito) {
+    const clave = claveSimple(p.id);
+    pastilla = `<div class="pastilla pastilla--contador">
+        <button type="button" data-card-menos="${esc(clave)}" aria-label="Quitar uno">−</button>
+        <span>${enCarrito}</span>
+        <button type="button" data-card-mas="${esc(clave)}" aria-label="Agregar uno">+</button>
+      </div>`;
   } else {
-    acciones = `
-      <button type="button" class="btn-pedir" data-agregar-directo="${esc(p.id)}">Agregar</button>
-      <a href="${waLink(CONFIG.mensajeWhatsapp(p.nombre))}" target="_blank" rel="noopener" class="link-pedir-ya">o pedir directo por WhatsApp</a>`;
+    pastilla = `<button type="button" class="pastilla" data-agregar-directo="${esc(p.id)}">
+        ${ICONO_CARRITO}<span>Agregar</span>
+      </button>`;
   }
 
+  const insignia = (tieneOpciones && enCarrito)
+    ? `<span class="producto-insignia">${enCarrito}</span>` : "";
+
+  const categoria = p.categoria
+    ? `<span class="producto-categoria">${esc(p.categoria)}</span>` : "";
+
   return `
-    <div class="producto-card">
-      ${imagen}
-      <h3>${esc(p.nombre)}</h3>
-      <p>${etiquetaPrecio} <span class="producto-unidad">/ ${esc(p.unidad)}</span></p>
-      ${muestrasColor}
-      ${acciones}
-    </div>`;
+    <article class="producto-card${enCarrito ? " producto-card--en-carrito" : ""}${!p.disponible ? " producto-card--agotado" : ""}">
+      <div class="producto-media">
+        ${imagen}
+        ${insignia}
+        ${pastilla}
+      </div>
+      <div class="producto-info">
+        ${categoria}
+        <h3>${esc(p.nombre)}</h3>
+        ${muestrasColor}
+        <div class="producto-pie">
+          <span class="producto-precio">${etiquetaPrecio}<i>/ ${esc(p.unidad)}</i></span>
+          <a href="${waLink(CONFIG.mensajeWhatsapp(p.nombre))}" target="_blank" rel="noopener"
+             class="btn-wa" title="Pedir solo este por WhatsApp" aria-label="Pedir solo ${esc(p.nombre)} por WhatsApp">
+            ${ICONO_WA}
+          </a>
+        </div>
+      </div>
+    </article>`;
+}
+
+/* ============================================================
+   ANIMACIÓN DEL TÍTULO — LETRA POR LETRA
+   ------------------------------------------------------------
+   Se parte el h1 en letras sueltas para escalonarlas. Dos cuidados
+   que ya nos habían mordido antes:
+
+   1) Cada palabra va envuelta en un .word con white-space:nowrap.
+      Sin eso el navegador puede cortar la línea EN MEDIO de una
+      palabra, porque cada letra es un inline-block independiente
+      ("Queq / uitos").
+   2) Los espacios se dejan como texto normal entre palabras. Si se
+      meten en un span, miden 0px y las palabras se pegan ("byGris").
+
+   Además se respeta el <br> y el <span>Gris</span> con su cursiva.
+   ============================================================ */
+const PASO_LETRA = 0.045;   // segundos de diferencia entre una letra y la siguiente
+
+/* Tintes muy claros a propósito: el título del hero va sobre una foto, y
+   un pastel saturado se perdería. Se leen casi como blanco, con un matiz
+   que solo se nota cuando pasa el brillo. */
+const TINTES_TITULO = [
+  "var(--titulo-tinte-1)",
+  "var(--titulo-tinte-2)",
+  "var(--titulo-tinte-3)",
+  "var(--titulo-tinte-4)",
+];
+
+/* Parte un título en letras sueltas. Sirve para cualquier encabezado:
+   la animación en sí la decide el CSS según el elemento padre. */
+function partirEnLetras(selector, { paso = PASO_LETRA, tintes = false } = {}) {
+  const el = document.querySelector(selector);
+  if (!el || el.dataset.partido === "1") return;
+
+  let i = 0;
+
+  const crearLetra = (ch) => {
+    const span = document.createElement("span");
+    span.className = "letter";
+    span.textContent = ch;
+    span.style.setProperty("--letter-delay", `${(i * paso).toFixed(3)}s`);
+    if (tintes) span.style.setProperty("--tinte", TINTES_TITULO[i % TINTES_TITULO.length]);
+    i++;
+    return span;
+  };
+
+  // Mete el texto en destino, partido en palabras y luego en letras
+  const llenar = (destino, texto) => {
+    texto.split(/(\s+)/).forEach((trozo) => {
+      if (!trozo) return;
+      if (/^\s+$/.test(trozo)) { destino.appendChild(document.createTextNode(" ")); return; }
+      const palabra = document.createElement("span");
+      palabra.className = "word";
+      for (const ch of trozo) palabra.appendChild(crearLetra(ch));
+      destino.appendChild(palabra);
+    });
+  };
+
+  const recorrer = (origen, destino) => {
+    [...origen.childNodes].forEach((nodo) => {
+      if (nodo.nodeType === Node.TEXT_NODE) {
+        llenar(destino, nodo.textContent);
+      } else if (nodo.nodeName === "BR") {
+        destino.appendChild(document.createElement("br"));
+      } else if (nodo.nodeType === Node.ELEMENT_NODE) {
+        // <span>, <em>… se conservan por si llevan estilo propio
+        const copia = document.createElement(nodo.nodeName.toLowerCase());
+        copia.className = nodo.className;
+        recorrer(nodo, copia);
+        destino.appendChild(copia);
+      }
+    });
+  };
+
+  const fragmento = document.createDocumentFragment();
+  recorrer(el, fragmento);
+
+  el.innerHTML = "";
+  el.appendChild(fragmento);
+  el.dataset.partido = "1";
+
+  // Cuánto tarda la ola completa: el CSS lo usa para arrancar el bucle
+  // justo cuando la última letra terminó de aparecer.
+  el.style.setProperty("--recorrido", `${(i * paso + 0.6).toFixed(2)}s`);
+
+  // Doble requestAnimationFrame: las letras se insertan primero y se
+  // animan en el frame siguiente. Si se hace todo junto, el navegador
+  // calcula posiciones y anima al mismo tiempo y se ve un tirón.
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => el.classList.add("animar"));
+  });
+}
+
+/* ============================================================
+   ANIMACIÓN DE LOS TÍTULOS
+   ------------------------------------------------------------
+   Dos cuidados que ya nos habían mordido antes:
+
+   1) Cada palabra va envuelta en un .word con white-space:nowrap.
+      Sin eso el navegador puede cortar la línea EN MEDIO de una
+      palabra, porque cada letra es un inline-block independiente
+      ("Queq / uitos").
+   2) Los espacios se dejan como texto normal entre palabras. Si se
+      meten en un span, miden 0px y las palabras se pegan ("byGris").
+   ============================================================ */
+/* ------------------------------------------------------------
+   MÁQUINA DE ESCRIBIR (título del hero)
+
+   El truco clásico de CSS anima el ANCHO con steps() y necesita
+   white-space:nowrap, o sea que solo sirve en UNA línea. Este
+   título va en tres líneas y a 135px, así que se hace letra por
+   letra sobre los spans que ya existen.
+
+   Las letras se ocultan con visibility:hidden, no con display:none:
+   así el bloque conserva su tamaño desde el principio y la página
+   no da saltos mientras se escribe.
+   ------------------------------------------------------------ */
+const ESCRITURA = {
+  velocidad:    55,    // ms por letra al escribir
+  borrado:      28,    // ms por letra al borrar (borrar siempre se siente más rápido)
+  esperaLleno:  4000,  // ms con el texto completo antes de borrar
+  esperaVacio:  550,   // ms en blanco antes de volver a escribir
+  repetir:      true,  // false = se escribe una vez y el cursor se queda parpadeando
+};
+
+function escribirTitulo(selector) {
+  const el = document.querySelector(selector);
+  if (!el) return;
+  const letras = [...el.querySelectorAll(".letter")];
+  if (!letras.length) return;
+
+  // Con "reducir movimiento" activado se muestra todo de golpe
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    letras.forEach((l) => l.classList.add("visible"));
+    return;
+  }
+
+  el.classList.add("escribiendo-modo");
+
+  let i = 0;              // cuántas letras se ven
+  let borrando = false;
+
+  const ponerCursor = () => {
+    letras.forEach((l) => l.classList.remove("cursor", "cursor-antes"));
+    if (i === 0) letras[0].classList.add("cursor-antes");
+    else letras[i - 1].classList.add("cursor");
+  };
+
+  const paso = () => {
+    if (!borrando) {
+      if (i < letras.length) {
+        letras[i].classList.add("visible");
+        i++;
+        ponerCursor();
+        setTimeout(paso, ESCRITURA.velocidad);
+        return;
+      }
+      // Terminó de escribir
+      ponerCursor();
+      if (!ESCRITURA.repetir) return;
+      borrando = true;
+      setTimeout(paso, ESCRITURA.esperaLleno);
+      return;
+    }
+
+    if (i > 0) {
+      i--;
+      letras[i].classList.remove("visible");
+      ponerCursor();
+      setTimeout(paso, ESCRITURA.borrado);
+      return;
+    }
+    // Quedó vacío: vuelve a empezar
+    borrando = false;
+    ponerCursor();
+    setTimeout(paso, ESCRITURA.esperaVacio);
+  };
+
+  ponerCursor();
+  setTimeout(paso, 350);   // un respiro antes de arrancar
+}
+
+function animarTitulos() {
+  // Hero: máquina de escribir
+  partirEnLetras(".header-texto h1", { tintes: true });
+  escribirTitulo(".header-texto h1");
+
+  // Productos: las letras caen y se quedan colgando, meciéndose
+  partirEnLetras(".productos-encabezado h2", { paso: 0.065 });
+}
+
+/* ============================================================
+   FILTROS: SUBMENÚ DE CATEGORÍAS + BUSCADOR
+   ============================================================ */
+const Filtros = {
+  categoria: "todos",
+  texto: "",
+  verTodo: false,      // ya le dio a "Ver más"
+
+  activo() { return this.categoria !== "todos" || this.texto.trim() !== ""; },
+  limpiar() { this.categoria = "todos"; this.texto = ""; this.verTodo = false; },
+};
+
+/* Quita acentos y mayúsculas para que "azucar" encuentre "Azúcar"
+   y "chocolate" encuentre "Chocolaté". */
+function normalizar(t) {
+  return String(t ?? "")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase().trim();
+}
+
+/* Las categorías salen solas del catálogo, en el orden en que aparecen
+   en productos.js. Así Luis no tiene que mantener una lista aparte. */
+function categoriasDelCatalogo() {
+  const cuenta = new Map();
+  PRODUCTOS.forEach((p) => {
+    const c = (p.categoria || "").trim();
+    if (!c) return;
+    cuenta.set(c, (cuenta.get(c) || 0) + 1);
+  });
+  return [...cuenta.entries()];
+}
+
+function productosFiltrados() {
+  const busqueda = normalizar(Filtros.texto);
+  return PRODUCTOS.filter((p) => {
+    if (Filtros.categoria !== "todos" && (p.categoria || "").trim() !== Filtros.categoria) return false;
+    if (!busqueda) return true;
+    const heno = normalizar(`${p.nombre} ${p.categoria || ""} ${p.unidad || ""}`);
+    return busqueda.split(/\s+/).every((palabra) => heno.includes(palabra));
+  });
+}
+
+function renderChips() {
+  const cont = document.getElementById("filtrosChips");
+  if (!cont) return;
+  const cats = categoriasDelCatalogo();
+
+  // Con una sola categoría (o ninguna) el submenú no aporta nada
+  if (cats.length < 2) { cont.innerHTML = ""; cont.hidden = true; return; }
+  cont.hidden = false;
+
+  const chip = (valor, texto, cuenta) => `
+    <button type="button" class="chip-cat${Filtros.categoria === valor ? " activo" : ""}"
+            data-categoria="${esc(valor)}" aria-pressed="${Filtros.categoria === valor}">
+      ${esc(texto)}<span class="chip-num">${cuenta}</span>
+    </button>`;
+
+  cont.innerHTML = chip("todos", "Todos", PRODUCTOS.length)
+    + cats.map(([c, n]) => chip(c, c, n)).join("");
 }
 
 function renderProductos() {
-  const visibles = CONFIG.productosVisibles || 10;
   const grid = document.getElementById("productosGrid");
   const extra = document.getElementById("extraProductos");
-  grid.innerHTML = PRODUCTOS.slice(0, visibles).map((p, i) => productoCardHTML(p, i)).join("");
-  const resto = PRODUCTOS.slice(visibles);
-  if (resto.length) {
-    extra.innerHTML = resto.map((p, i) => productoCardHTML(p, visibles + i)).join("");
-  } else {
-    document.getElementById("ver-mas").style.display = "none";
+  const botonMas = document.getElementById("ver-mas");
+  const vacio = document.getElementById("sinResultados");
+  const conteo = document.getElementById("conteo");
+  if (!grid) return;
+
+  const lista = productosFiltrados();
+
+  // --- Nada encontrado ---
+  if (!lista.length) {
+    grid.innerHTML = "";
+    extra.innerHTML = "";
+    extra.classList.remove("show");
+    if (botonMas) botonMas.hidden = true;
+    if (conteo) conteo.textContent = "";
+    if (vacio) {
+      vacio.hidden = false;
+      const txt = document.getElementById("sinResultadosTexto");
+      if (txt) {
+        txt.textContent = Filtros.texto.trim()
+          ? `No encontramos nada con “${Filtros.texto.trim()}”.`
+          : "No hay productos en esta categoría.";
+      }
+    }
+    return;
   }
+  if (vacio) vacio.hidden = true;
+
+  // --- Con filtro activo se muestra todo lo que coincide, sin "Ver más":
+  //     cortar los resultados de una búsqueda confunde más de lo que ayuda. ---
+  const visibles = CONFIG.productosVisibles || 10;
+  const paginar = !Filtros.activo() && !Filtros.verTodo && lista.length > visibles;
+
+  if (paginar) {
+    grid.innerHTML = lista.slice(0, visibles).map((p) => productoCardHTML(p)).join("");
+    extra.innerHTML = lista.slice(visibles).map((p) => productoCardHTML(p)).join("");
+    extra.classList.remove("show");
+    if (botonMas) botonMas.hidden = false;
+  } else {
+    grid.innerHTML = lista.map((p) => productoCardHTML(p)).join("");
+    extra.innerHTML = "";
+    extra.classList.remove("show");
+    if (botonMas) botonMas.hidden = true;
+  }
+
+  if (conteo) {
+    conteo.textContent = Filtros.activo()
+      ? `${lista.length} ${lista.length === 1 ? "producto" : "productos"}`
+      : "";
+  }
+}
+
+function aplicarFiltros() {
+  renderChips();
+  renderProductos();
 }
 
 /* ============================================================
@@ -265,7 +630,7 @@ async function cargarDisponibilidad() {
     if (!respuesta.ok) return;
     const datos = await respuesta.json();
     aplicarDisponibilidad(datos);
-    renderProductos();
+    aplicarFiltros();
     limpiarCarritoDeAgotados();
   } catch (e) {
     // Sin conexión, archivo ausente o JSON mal escrito: se deja el
@@ -365,7 +730,7 @@ const Modal = {
     const p = this.producto;
     if (!p) return;
     const cuerpo = document.getElementById("modalCuerpo");
-    const imagenSrc = p.imagen || IMAGENES_PRODUCTOS[PRODUCTOS.indexOf(p)] || "";
+    const imagenSrc = imagenDe(p);
 
     const grupos = (p.opciones || []).map((grupo) => {
       const valores = grupo.valores.map((v) => {
@@ -457,6 +822,10 @@ function cerrarCarrito() {
 
 function actualizarVistaCarrito() {
   const cantidad = Carrito.totalArticulos();
+
+  // Las tarjetas muestran el contador y el borde de "ya está en el carrito",
+  // así que se vuelven a dibujar cada vez que el carrito cambia.
+  if (document.getElementById("productosGrid")) renderProductos();
 
   const badge = document.getElementById("carritoContador");
   if (badge) {
@@ -697,21 +1066,63 @@ function aplicarMapa() {
    MENÚ MÓVIL
    ============================================================ */
 const menuCheckbox = document.getElementById("menu");
-const navbar = document.querySelector(".navbar");
+const barraMenu = document.getElementById("barraMenu");
+
+/* Abrir y cerrar el menú lo resuelve el CSS con el checkbox. Aquí solo
+   se cierra al pasar a escritorio y al picarle a un link. */
 function ajustarNavbar() {
-  if (window.innerWidth > BREAKPOINT_MOVIL) { navbar.style.display = ""; menuCheckbox.checked = false; }
-  else { navbar.style.display = menuCheckbox.checked ? "block" : ""; }
+  if (window.innerWidth > BREAKPOINT_MOVIL) menuCheckbox.checked = false;
 }
-menuCheckbox.addEventListener("change", ajustarNavbar);
 window.addEventListener("resize", ajustarNavbar);
 document.querySelectorAll(".navbar a").forEach((link) => {
-  link.addEventListener("click", () => { menuCheckbox.checked = false; ajustarNavbar(); });
+  link.addEventListener("click", () => { menuCheckbox.checked = false; });
 });
+
+/* ------------------------------------------------------------
+   La barra se pone sólida al bajar
+   Sobre la foto va transparente; en cuanto la página se desplaza,
+   el fondo crema entra para que los links se sigan leyendo contra
+   lo que venga abajo.
+   ------------------------------------------------------------ */
+function actualizarBarra() {
+  if (!barraMenu) return;
+  barraMenu.classList.toggle("menu--fijo", window.scrollY > 30);
+}
+window.addEventListener("scroll", actualizarBarra, { passive: true });
+
+/* ------------------------------------------------------------
+   Marcar en qué sección va el visitante
+   ------------------------------------------------------------ */
+function vigilarSecciones() {
+  const links = [...document.querySelectorAll(".navbar a")];
+  const porId = new Map();
+  links.forEach((a) => {
+    const id = a.getAttribute("href")?.replace("#", "");
+    const seccion = id && document.getElementById(id);
+    if (seccion) porId.set(seccion, a);
+  });
+  if (!porId.size || !("IntersectionObserver" in window)) return;
+
+  const observador = new IntersectionObserver((entradas) => {
+    entradas.forEach((e) => {
+      if (!e.isIntersecting) return;
+      links.forEach((a) => a.classList.remove("activo"));
+      porId.get(e.target)?.classList.add("activo");
+    });
+  }, {
+    // La franja de detección va a media pantalla: la sección se marca
+    // cuando de verdad es la que se está viendo, no al asomarse.
+    rootMargin: "-45% 0px -50% 0px",
+    threshold: 0,
+  });
+
+  porId.forEach((_, seccion) => observador.observe(seccion));
+}
 
 document.getElementById("ver-mas").addEventListener("click", (e) => {
   e.preventDefault();
-  document.getElementById("extraProductos").classList.add("show");
-  e.currentTarget.style.display = "none";
+  Filtros.verTodo = true;
+  renderProductos();
 });
 
 /* ============================================================
@@ -720,16 +1131,21 @@ document.getElementById("ver-mas").addEventListener("click", (e) => {
    tarjeta. Así funciona aunque las tarjetas se vuelvan a dibujar.
    ============================================================ */
 document.addEventListener("click", (e) => {
-  const t = e.target.closest("[data-abrir-opciones], [data-agregar-directo], [data-grupo], [data-cantidad], [data-carrito-menos], [data-carrito-mas], [data-carrito-quitar]");
+  const t = e.target.closest("[data-abrir-opciones], [data-agregar-directo], [data-grupo], [data-cantidad], [data-carrito-menos], [data-carrito-mas], [data-carrito-quitar], [data-card-menos], [data-card-mas]");
 
   // --- Tarjetas ---
   if (t?.dataset.abrirOpciones) { Modal.abrir(t.dataset.abrirOpciones); return; }
 
   if (t?.dataset.agregarDirecto) {
+    // Sin variantes se agrega de una vez. No se abre el carrito: la tarjeta
+    // ya se convierte en contador y se ve lo que pasó sin tapar el catálogo.
     Carrito.agregar(t.dataset.agregarDirecto, {}, 1, "");
-    abrirCarrito();
     return;
   }
+
+  // --- Contador dentro de la tarjeta ---
+  if (t?.dataset.cardMenos) { Carrito.cambiarCantidad(t.dataset.cardMenos, -1); return; }
+  if (t?.dataset.cardMas)   { Carrito.cambiarCantidad(t.dataset.cardMas, 1); return; }
 
   // --- Modal: elegir una opción ---
   if (t?.dataset.grupo) {
@@ -783,12 +1199,57 @@ document.addEventListener("DOMContentLoaded", () => {
     else if (document.getElementById("panelCarrito")?.classList.contains("abierto")) cerrarCarrito();
   });
 
+  /* --- Submenú de categorías --- */
+  document.getElementById("filtrosChips")?.addEventListener("click", (e) => {
+    const chip = e.target.closest("[data-categoria]");
+    if (!chip) return;
+    Filtros.categoria = chip.dataset.categoria;
+    Filtros.verTodo = false;
+    aplicarFiltros();
+  });
+
+  /* --- Buscador --- */
+  const campoBuscar = document.getElementById("buscador");
+  const botonLimpiar = document.getElementById("buscadorLimpiar");
+
+  campoBuscar?.addEventListener("input", () => {
+    Filtros.texto = campoBuscar.value;
+    Filtros.verTodo = false;
+    if (botonLimpiar) botonLimpiar.hidden = !campoBuscar.value;
+    renderProductos();
+  });
+
+  // Enter no debe recargar nada: no hay formulario que enviar
+  campoBuscar?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") e.preventDefault();
+    if (e.key === "Escape" && campoBuscar.value) {
+      campoBuscar.value = "";
+      campoBuscar.dispatchEvent(new Event("input"));
+    }
+  });
+
+  botonLimpiar?.addEventListener("click", () => {
+    campoBuscar.value = "";
+    campoBuscar.dispatchEvent(new Event("input"));
+    campoBuscar.focus();
+  });
+
+  document.getElementById("limpiarFiltros")?.addEventListener("click", () => {
+    Filtros.limpiar();
+    if (campoBuscar) campoBuscar.value = "";
+    if (botonLimpiar) botonLimpiar.hidden = true;
+    aplicarFiltros();
+  });
+
   clonarValoresDeOpciones(); // antes que nada: separa las paletas compartidas
   aplicarConfig();
-  renderProductos();
-  Carrito.cargar();
+  Carrito.cargar();          // antes de pintar: las tarjetas muestran el contador
+  aplicarFiltros();
   actualizarVistaCarrito();
   ajustarNavbar();
+  actualizarBarra();
+  vigilarSecciones();
+  animarTitulos();
 
   // Se pide al final, sin await: el catálogo ya se pintó y esto solo
   // apaga lo que esté agotado cuando llegue.

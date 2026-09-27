@@ -9,6 +9,14 @@
 //   nombre      Nombre que ve el cliente.
 //   precio      Precio BASE, sin signo de pesos ni comas.
 //   unidad      "1 kg", "pieza", "set"… solo texto informativo.
+//   categoria   Etiqueta gris que sale ARRIBA del nombre en la tarjeta
+//               ("Colorantes", "Moldes", "Harinas"…). ADEMÁS sirve para
+//               armar el submenú de la sección de productos: las pastillas
+//               salen SOLAS de lo que escribas aquí, así que basta con
+//               poner la misma palabra en los productos que van juntos.
+//               Escríbela siempre igual (cuida acentos y mayúsculas), o
+//               saldrán dos pastillas distintas para lo mismo.
+//               Si un producto no la trae, solo aparece en "Todos".
 //   imagen      Opcional: "img/archivo.jpg". Si no la pones, se usa el emoji.
 //   emoji       Opcional: se muestra cuando no hay imagen.
 //   disponible  false = se muestra "Agotado" y no se puede pedir.
@@ -79,6 +87,7 @@ const PRODUCTOS = [
   // ----------------------------------------------------------
   {
     id: "bolas",
+    categoria: "Decoración",
     nombre: "bolas",
     precio: 45,
     unidad: "1 kg",
@@ -90,6 +99,7 @@ const PRODUCTOS = [
   },
   {
     id: "molde1",
+    categoria: "Moldes",
     nombre: "molde1",
     precio: 38,
     unidad: "900 g",
@@ -98,6 +108,7 @@ const PRODUCTOS = [
   },
   {
     id: "molde2",
+    categoria: "Moldes",
     nombre: "molde2",
     precio: 180,
     unidad: "1 kg",
@@ -106,6 +117,7 @@ const PRODUCTOS = [
   },
   {
     id: "molde3",
+    categoria: "Moldes",
     nombre: "molde3",
     precio: 150,
     unidad: "set",
@@ -114,6 +126,7 @@ const PRODUCTOS = [
   },
   {
     id: "corona",
+    categoria: "Decoración",
     nombre: "corona",
     precio: 65,
     unidad: "250 ml",
@@ -122,6 +135,7 @@ const PRODUCTOS = [
   },
   {
     id: "hbd",
+    categoria: "Decoración",
     nombre: "hbd",
     precio: 55,
     unidad: "1 kg",
@@ -133,6 +147,7 @@ const PRODUCTOS = [
   },
   {
     id: "fc",
+    categoria: "Decoración",
     nombre: "fc",
     precio: 30,
     unidad: "100 g",
@@ -146,6 +161,7 @@ const PRODUCTOS = [
   // ----------------------------------------------------------
   {
     id: "colorante-gel",
+    categoria: "Colorantes",
     nombre: "Colorante en gel",
     precio: 45,
     unidad: "frasco",
@@ -168,6 +184,7 @@ const PRODUCTOS = [
   },
   {
     id: "capacillos",
+    categoria: "Capacillos",
     nombre: "Capacillos decorados",
     precio: 35,
     unidad: "paquete 50 pz",
@@ -187,6 +204,7 @@ const PRODUCTOS = [
   },
   {
     id: "molde-silicon",
+    categoria: "Moldes",
     nombre: "Molde de silicón",
     precio: 90,
     unidad: "pieza",
@@ -208,6 +226,7 @@ const PRODUCTOS = [
   },
   {
     id: "fondant",
+    categoria: "Coberturas",
     nombre: "Fondant listo para usar",
     precio: 120,
     unidad: "1 kg",
@@ -229,6 +248,7 @@ const PRODUCTOS = [
   },
   {
     id: "listón",
+    categoria: "Decoración",
     nombre: "Listón decorativo",
     precio: 60,
     unidad: "rollo 30 m",
@@ -250,6 +270,7 @@ const PRODUCTOS = [
   },
   {
     id: "base-carton",
+    categoria: "Empaque",
     nombre: "Base de cartón para pastel",
     precio: 18,
     unidad: "pieza",
@@ -271,6 +292,7 @@ const PRODUCTOS = [
   },
   {
     id: "chispas",
+    categoria: "Decoración",
     nombre: "Chispas de colores",
     precio: 50,
     unidad: "200 g",
@@ -279,6 +301,7 @@ const PRODUCTOS = [
   },
   {
     id: "mangas",
+    categoria: "Utensilios",
     nombre: "Mangas desechables",
     precio: 85,
     unidad: "paquete 100 pz",

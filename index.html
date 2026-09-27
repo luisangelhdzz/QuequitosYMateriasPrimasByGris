@@ -32,42 +32,39 @@
        OJO: disponibilidad.json NO lleva versión. El script lo pide con
        cache:"no-store" justamente para que marcar un producto como agotado
        se vea de inmediato sin tener que tocar este archivo. -->
-  <link rel="stylesheet" href="style.css?v=3" />
+  <link rel="stylesheet" href="style.css?v=12" />
 </head>
 <body>
 
+  <!-- ============ BARRA DE NAVEGACIÓN ============
+       Va FUERA del <header> a propósito: como está fija a la pantalla,
+       dejarla dentro la ataba al recorte del header. -->
+  <div class="menu" id="barraMenu">
+    <a href="#inicio" class="logo" aria-label="Inicio">
+      <img src="img/relogo.jpeg" alt="Quequitos y Materias Primas by Gris" />
+    </a>
+
+    <input type="checkbox" id="menu" />
+    <label for="menu" class="menu-label" aria-label="Abrir menú">
+      <span></span><span></span><span></span>
+    </label>
+
+    <nav class="navbar">
+      <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#productos">Productos</a></li>
+        <li><a href="#referencias">Referencias</a></li>
+        <li><a href="#metodos">Cómo pedir</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+      </ul>
+    </nav>
+  </div>
+
   <!-- ============ HEADER ============ -->
   <header class="header" id="inicio">
-
-    <div class="menu container">
-      <a href="#inicio" class="logo">
-        <img src="img/relogo.jpeg" alt="Quequitos y Materias Primas by Gris logo" />
-      </a>
-
-      <input type="checkbox" id="menu" />
-      <label for="menu" class="menu-label" aria-label="Abrir menú">
-        <span></span><span></span><span></span>
-      </label>
-
-      <nav class="navbar">
-        <ul>
-          <li><a href="#inicio">Inicio</a></li>
-          <li><a href="#productos">Productos</a></li>
-          <li><a href="#referencias">Referencias</a></li>
-          <li><a href="#metodos">Cómo pedir</a></li>
-          <li><a href="#contacto">Contacto</a></li>
-        </ul>
-      </nav>
-    </div>
-
     <div class="header-content">
       <div class="header-texto">
         <h1>Quequitos Materias Primas <br>by <span>Gris</span></h1>
-        <p class="header-p">
-          Harinas, chocolates, colorantes, moldes y todo lo que necesitas
-          para tus creaciones — al mayoreo y menudeo.
-        </p>
-        <a href="#productos" class="btn-1">Ver catálogo</a>
       </div>
 
       <!-- logo moved to the menu (left) -->
@@ -77,13 +74,40 @@
   <!-- ============ PRODUCTOS ============ -->
   <section class="productos" id="productos">
     <div class="productos-content container">
-      <span class="eyebrow">Nuestro catálogo</span>
-      <h2>Productos</h2>
-      <span class="divisor"></span>
-      <p class="txt-p">Ingredientes y herramientas de calidad para tus creaciones.</p>
+      <div class="productos-encabezado">
+        <span class="eyebrow">Nuestro catálogo</span>
+        <h2>Productos</h2>
+        <p class="txt-p">Ingredientes y herramientas de calidad para tus creaciones.</p>
+      </div>
+
+      <!-- Submenú + buscador.
+           Las pastillas de categoría NO se escriben aquí: script.js las arma
+           solo con los campos "categoria" de productos.js. -->
+      <div class="filtros" id="filtros">
+        <div class="filtros-chips" id="filtrosChips" role="group" aria-label="Filtrar por categoría"></div>
+
+        <div class="buscador">
+          <svg class="buscador-icono" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/>
+            <path d="M16.5 16.5 21 21" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" id="buscador" placeholder="Buscar producto…"
+                 autocomplete="off" aria-label="Buscar producto" />
+          <button type="button" class="buscador-limpiar" id="buscadorLimpiar"
+                  aria-label="Limpiar búsqueda" hidden>&times;</button>
+        </div>
+      </div>
+
+      <p class="conteo" id="conteo" aria-live="polite"></p>
 
       <div class="productos-group" id="productosGrid"></div>
       <div class="extra-products" id="extraProductos"></div>
+
+      <div class="sin-resultados" id="sinResultados" hidden>
+        <span>🔍</span>
+        <p id="sinResultadosTexto">No encontramos nada con esa búsqueda.</p>
+        <button type="button" class="btn-1 btn-1--claro" id="limpiarFiltros">Ver todo el catálogo</button>
+      </div>
 
       <a href="#" id="ver-mas" class="btn-1">Ver más</a>
     </div>
@@ -243,7 +267,7 @@
         <b id="carritoTotal">$0.00</b>
       </div>
 
-      <button type="button" class="btn-1 carrito-pedir" id="carritoPedir">Hacer pedido por WhatsApp</button>
+      <button type="button" class="btn-1 carrito-pedir" id="carritoPedir">Hacer pedido por whatsapp</button>
       <button type="button" class="carrito-vaciar" id="carritoVaciar">Vaciar carrito</button>
       <p class="carrito-legal">
         El pedido se confirma por WhatsApp. No se cobra nada en línea.
@@ -260,8 +284,8 @@
     </div>
   </div>
 
-  <script src="config.js?v=3"></script>
-  <script src="productos.js?v=3"></script>
-  <script src="script.js?v=3"></script>
+  <script src="config.js?v=12"></script>
+  <script src="productos.js?v=12"></script>
+  <script src="script.js?v=12"></script>
 </body>
 </html>

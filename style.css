@@ -20,6 +20,22 @@
   --texto-suave:  #927d77;
   --titulo:       #7b5651;
 
+  /* Alto de la barra de navegación: se le resta al hero para que la
+     foto quepa completa en la primera pantalla. */
+  /* Tintes del título: pasteles muy claros. Sobre la foto del hero un
+     pastel saturado se pierde, así que estos se leen casi como blanco
+     y el matiz solo se nota cuando pasa el brillo. */
+  --titulo-tinte-1: #ffffff;
+  --titulo-tinte-2: #fdeef0;   /* rosa */
+  --titulo-tinte-3: #fdf4e9;   /* miel */
+  --titulo-tinte-4: #eef5f1;   /* menta */
+  --titulo-halo:    rgba(249, 214, 220, .75);
+
+  --alto-barra:   83px;
+  /* Lo que mide la barra cuando ya encogió al bajar. Los filtros se
+     pegan a esta altura, si no quedaba una franja hueca entre los dos. */
+  --alto-barra-fija: 67px;
+
   /* Bordes y sombras */
   --linea:        rgba(124, 86, 81, 0.12);
   --sombra:       0 10px 26px rgba(124, 86, 81, 0.08);
@@ -72,8 +88,8 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
      header se re-dimensiona: la foto se re-recorta y parece que salta.
      Con svh la altura se queda fija. La línea de 100vh es el respaldo
      para navegadores viejos. */
-  min-height:100vh;
-  min-height:100svh;
+  min-height:calc(100vh - var(--alto-barra));
+  min-height:calc(100svh - var(--alto-barra));
 
   background-image: linear-gradient(110deg, rgba(94,50,53,0.44) 0%, rgba(172,119,123,0.28) 26%, rgba(200,158,158,0.16) 42%, rgba(255,255,255,0.04) 100%), url("img/hero-pastel_4.jpg");
   background-size: cover;
@@ -87,89 +103,112 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .header::before { content:""; position:absolute; inset:0; background: linear-gradient(100deg, rgba(181,120,124,0.38) 0%, rgba(181,120,124,0.20) 24%, rgba(60,40,38,0.10) 44%, rgba(20,20,20,0.04) 58%, rgba(20,20,20,0) 84%); }
 .header > * { position:relative; z-index:1 }
 
+/* ------------------------------------------------------------
+   BARRA DE NAVEGACIÓN
+   Antes era una "pastilla" de vidrio esmerilado flotando sobre la
+   foto: sobre una imagen clara se veía como una franja gris sucia,
+   y los links iban en negro grueso con mucho espaciado.
+   Ahora la barra es transparente sobre la foto y, al bajar, se
+   vuelve sólida color crema para que siempre se lea.
+   ------------------------------------------------------------ */
 .menu {
-  position:absolute;
-  top:18px;
-  left:50%;
-  transform:translateX(-50%);
-  z-index:10;
-  width:min(1180px, calc(100% - 32px));
+  position:sticky;            /* ocupa su lugar arriba y se queda pegada al bajar */
+  top:0;
+  z-index:50;
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:16px 20px 16px 18px;
   gap:20px;
-  background:rgba(255,255,255,0.10);
-  border:1px solid rgba(255,255,255,0.22);
-  border-radius:999px;
-  backdrop-filter:blur(10px);
-  -webkit-backdrop-filter:blur(10px);
-  box-shadow:0 18px 36px rgba(82,46,42,0.12);
+  width:100%;
+  padding:14px clamp(18px, 4vw, 46px);
+  background:var(--blanco);   /* banda blanca sólida: el hero sigue igual, abajo */
+  border-bottom:1px solid var(--linea);
+  transition:box-shadow .3s, padding .3s;
 }
 
-.menu .logo {
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  width:62px;
-  height:62px;
-  padding:6px;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.26);
-  border-radius:18px;
-  box-shadow:0 10px 22px rgba(55,32,30,0.10);
+/* Al bajar solo gana un poco de sombra, para que se despegue del contenido */
+.menu.menu--fijo {
+  padding-top:10px; padding-bottom:10px;
+  box-shadow:0 6px 22px rgba(124,86,81,.09);
 }
+
+/* ---------- Logo ---------- */
+.menu .logo {
+  display:inline-flex; align-items:center;
+  flex-shrink:0;
+  border-radius:50%;
+  transition:transform .25s;
+}
+.menu .logo:hover { transform:scale(1.05) }
 
 .menu .logo img {
   display:block;
-  width:100%;
-  height:100%;
+  width:54px; height:54px;
   object-fit:cover;
-  border-radius:12px;
+  border-radius:50%;
+  background:var(--blanco);
+  box-shadow:0 0 0 1px var(--linea);
+  transition:width .3s, height .3s;
 }
-@media (max-width:480px) { .menu .logo { width:48px; height:48px; border-radius:14px } }
+.menu--fijo .logo img { width:46px; height:46px }
 
-.menu .navbar ul { display:flex; align-items:center; gap:28px }
+/* ---------- Links ---------- */
+.menu .navbar ul { display:flex; align-items:center; gap:4px }
+
 .menu .navbar ul li a {
-  font-size:11px;
-  letter-spacing:2.2px;
-  text-transform:uppercase;
-  color:#060606;
-  font-weight:700;
-  padding:8px 0 6px;
-  border-bottom:1px solid transparent;
-  transition: color .25s, border-color .25s, transform .2s, opacity .25s;
-  text-shadow:0 2px 12px rgba(46,24,22,.30);
-  opacity:.96;
-}
-.menu .navbar ul li a:hover {
-  color:#f0a2df;
-  border-bottom-color: rgba(10, 10, 10, 0.9);
-  transform:translateY(-1px);
+  position:relative;
+  display:block;
+  padding:10px 15px;
+  font-family:'Poppins', sans-serif;
+  font-size:16px;
+  font-weight:500;
+  letter-spacing:.1px;
+  text-transform:none;
+  color:#1f1b1a;              /* negro suave: negro puro sobre blanco cansa la vista */
+  border-radius:10px;
+  transition:color .25s;
 }
 
+/* Subrayado que crece desde el centro */
+.menu .navbar ul li a::after {
+  content:"";
+  position:absolute;
+  left:15px; right:15px; bottom:5px;
+  height:2px; border-radius:2px;
+  background:var(--vino);
+  transform:scaleX(0);
+  transition:transform .28s cubic-bezier(.22,1,.36,1);
+}
+.menu .navbar ul li a:hover::after,
+.menu .navbar ul li a.activo::after { transform:scaleX(1) }
+
+.menu .navbar ul li a:hover,
+.menu .navbar ul li a.activo { color:var(--vino) }
+
+/* ---------- Hamburguesa ---------- */
 #menu { display:none }
 .menu-label {
   cursor:pointer;
   display:none;
   flex-direction:column;
   justify-content:center;
-  gap:5px;
-  width:28px;
-  height:28px;
-  padding:3px 4px;
-  border-radius:10px;
-  background:rgba(255,255,255,0.14);
-  border:1px solid rgba(255,255,255,0.18);
+  gap:5.5px;
+  width:30px; height:30px;
+  padding:4px 2px;
+  background:none; border:none;   /* antes tenía recuadro de vidrio */
 }
 .menu-label span {
-  display:block;
-  height:2px;
-  width:100%;
-  background:#ffffff;
+  display:block; height:2px; width:100%;
+  background:#1f1b1a;
   border-radius:999px;
-  box-shadow:0 1px 4px rgba(60,36,33,0.20);
+  transform-origin:center;
+  transition:transform .3s cubic-bezier(.22,1,.36,1), opacity .2s, background-color .3s;
 }
+
+/* Abierta: se convierte en una X */
+#menu:checked + .menu-label span:nth-child(1) { transform:translateY(7.5px) rotate(45deg) }
+#menu:checked + .menu-label span:nth-child(2) { opacity:0 }
+#menu:checked + .menu-label span:nth-child(3) { transform:translateY(-7.5px) rotate(-45deg) }
 
 .header-content { flex:1; display:flex; align-items:center; justify-content:space-between; gap:clamp(24px,4vw,60px); padding:120px clamp(30px,5vw,80px) 90px }
 .header-texto { flex:1 1 0; max-width:1000px; display:flex; flex-direction:column; justify-content:center }
@@ -177,13 +216,13 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 .header-texto h1 {
   font-family:'Epilogue', 'Poppins', sans-serif;
-  font-size: clamp(48px, 7vw, 118px);
-  line-height:0.96;
-  margin-bottom:30px;
+  font-size: clamp(54px, 9.4vw, 152px);
+  line-height:0.92;
+  margin-bottom:0;   /* ya no hay botón debajo */
   font-weight:800;
   color:#ffffff;
   text-shadow:0 6px 24px rgba(74, 35, 28, 0.18);
-  letter-spacing:-0.06em;
+  letter-spacing:-0.065em;
   text-wrap: normal;
 }
 
@@ -198,12 +237,76 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
    Solución: cada palabra va envuelta en .word (inline-block + nowrap)
    y los espacios vuelven a ser texto normal entre palabras.
    ------------------------------------------------------------ */
-.header-texto h1 span { font-style:italic; font-weight:300 }
+/* "Gris" va igual que el resto del título: sin cursiva ni peso distinto.
+   La regla se deja acotada por si algún día se le quiere volver a dar
+   estilo propio — NUNCA como "h1 span" a secas, porque el script convierte
+   cada palabra y cada letra en spans y saldrían todas afectadas. */
+.header-texto h1 > span:not(.word):not(.letter) { font-style:inherit; font-weight:inherit }
 .header-texto h1 em { font-style:italic; font-weight:300; display:block }
 
-.header-p { font-size:16.5px; font-weight:400; color:var(--crema); max-width:440px; margin-bottom:38px }
+/* El título viene escrito en el HTML, así que el navegador alcanza a
+   pintarlo COMPLETO antes de que el script lo parta en letras: se veía
+   un parpadeo con todo el texto y luego arrancaba la escritura.
+   Se mantiene oculto hasta que el script avisa que ya está listo.
 
-.header-texto .btn-1 { align-self:flex-start }
+   La animación de abajo es un seguro: si por lo que sea el JavaScript
+   no corriera, a los 3 segundos el título aparece de todos modos en
+   lugar de quedarse en blanco para siempre. */
+.header-texto h1 {
+  visibility:hidden;
+  animation:seguroTitulo 0s 3s forwards;
+}
+@keyframes seguroTitulo { to { visibility:visible } }
+.header-texto h1.animar { visibility:visible; animation:none }
+
+/* Cada palabra entera en una caja que no se parte */
+.header-texto h1 .word { display:inline-block; white-space:nowrap }
+
+.header-texto h1 .letter {
+  display:inline-block;
+  position:relative;              /* el cursor se cuelga de aquí */
+  color:var(--tinte, #fff);
+}
+
+/* ------------------------------------------------------------
+   MÁQUINA DE ESCRIBIR
+   visibility:hidden en vez de display:none: la letra sigue
+   ocupando su lugar, así el bloque no cambia de tamaño mientras
+   se escribe y la página no da saltos.
+   ------------------------------------------------------------ */
+.header-texto h1.escribiendo-modo .letter { visibility:hidden }
+.header-texto h1.escribiendo-modo .letter.visible { visibility:visible }
+
+/* El cursor va pegado a la última letra escrita.
+   Cuando no hay ninguna, se dibuja ANTES de la primera. */
+.header-texto h1 .letter.cursor::after,
+.header-texto h1 .letter.cursor-antes::before {
+  content:"";
+  position:absolute;
+  top:.09em;
+  width:.055em;
+  height:.82em;
+  border-radius:2px;
+  background:#fff;
+  box-shadow:0 0 12px rgba(255,255,255,.55);
+  /* La letra que lleva .cursor-antes está oculta, y visibility se
+     hereda: sin esto el cursor tampoco se vería. */
+  visibility:visible;
+  animation:parpadeo .7s steps(1, end) infinite;
+}
+.header-texto h1 .letter.cursor::after      { left:calc(100% + .03em) }
+.header-texto h1 .letter.cursor-antes::before { right:calc(100% + .03em) }
+
+@keyframes parpadeo {
+  0%, 49%   { opacity:1 }
+  50%, 100% { opacity:0 }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-texto h1 .letter { visibility:visible }
+  .header-texto h1 .letter.cursor::after,
+  .header-texto h1 .letter.cursor-antes::before { animation:none; opacity:1 }
+}
 
 /* ============================================================
    BOTONES
@@ -256,6 +359,216 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .productos-content { position:relative; z-index:1; text-align:center }
 .txt-p { font-size:15px; color:var(--texto-suave); margin-bottom:52px }
 
+/* ------------------------------------------------------------
+   ENCABEZADO DE PRODUCTOS
+   El h2 venía enorme y muy suelto, con un divisor de rombo que
+   lo hacía ver recargado. Ahora es más chico, más apretado y
+   sin adorno de por medio.
+   ------------------------------------------------------------ */
+.productos-encabezado { max-width:620px; margin:0 auto 30px }
+
+.productos-encabezado .eyebrow {
+  display:block;
+  font-size:11px; letter-spacing:2.6px;
+  margin-bottom:10px;
+}
+.productos .productos-encabezado h2 {
+  font-size:clamp(42px, 5.8vw, 78px);
+  line-height:1.05;
+  letter-spacing:-1.5px;
+  font-weight:700;
+  margin:0;
+  /* Las letras se mecen girando: sin aire abajo, las que bajan se
+     verían cortadas contra el párrafo. */
+  padding-bottom:6px;
+}
+
+/* ------------------------------------------------------------
+   "PRODUCTOS": las letras caen y se quedan colgando
+   Cada una gira desde su borde de arriba, como si estuviera
+   colgada de un hilo, con un retraso distinto para que se mezan
+   en ola y no todas al mismo tiempo.
+   ------------------------------------------------------------ */
+.productos-encabezado h2 .word { display:inline-block; white-space:nowrap }
+
+.productos-encabezado h2 .letter {
+  display:inline-block;
+  transform-origin:top center;   /* el "clavo" del que cuelga */
+  opacity:0;
+}
+
+.productos-encabezado h2.animar .letter {
+  animation:
+    letraCae .62s cubic-bezier(.34, 1.56, .64, 1) both,
+    letraCuelga 2.8s ease-in-out infinite;
+  animation-delay:
+    var(--letter-delay, 0s),
+    calc(var(--letter-delay, 0s) + var(--recorrido, 1.2s));
+}
+
+/* Cae desde arriba y rebota tantito al aterrizar */
+@keyframes letraCae {
+  0%   { opacity:0; transform:translateY(-.7em) rotate(-8deg) }
+  70%  { opacity:1; transform:translateY(.06em) rotate(3deg) }
+  100% { opacity:1; transform:translateY(0) rotate(0deg) }
+}
+
+/* El vaivén empieza y termina en 0° para que el bucle no dé tirones */
+@keyframes letraCuelga {
+  0%   { transform:rotate(0deg) }
+  25%  { transform:rotate(5.5deg) }
+  50%  { transform:rotate(0deg) }
+  75%  { transform:rotate(-5.5deg) }
+  100% { transform:rotate(0deg) }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .productos-encabezado h2 .letter,
+  .productos-encabezado h2.animar .letter {
+    opacity:1; transform:none; animation:none;
+  }
+}
+.productos-encabezado .txt-p {
+  font-size:15.5px;
+  line-height:1.6;
+  margin:12px auto 0;
+  max-width:460px;
+}
+
+/* ------------------------------------------------------------
+   SUBMENÚ + BUSCADOR
+   Se queda pegado debajo de la barra de navegación para que,
+   en un catálogo largo, no haya que subir hasta arriba para
+   cambiar de categoría.
+   ------------------------------------------------------------ */
+.filtros {
+  position:sticky;
+  top:var(--alto-barra-fija);
+  z-index:20;
+  display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+  justify-content:space-between;
+  margin:0 0 14px;
+  padding:12px 14px;
+  background:rgba(255,255,255,.93);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  border:1px solid var(--linea);
+  border-radius:16px;
+  box-shadow:0 6px 20px rgba(124,86,81,.07);
+}
+
+/* --- Pastillas de categoría --- */
+.filtros-chips {
+  display:flex; gap:7px; flex-wrap:nowrap;
+  overflow-x:auto;                  /* con muchas categorías se desliza */
+  scrollbar-width:none;
+  -ms-overflow-style:none;
+  padding:2px 2px;
+  flex:1 1 320px;
+  min-width:0;   /* sin esto la fila de pastillas no encoge y desborda la página */
+  scroll-snap-type:x proximity;
+  /* Difumina el borde derecho para que se note que la fila sigue */
+  -webkit-mask-image:linear-gradient(to right, #000 calc(100% - 22px), transparent);
+  mask-image:linear-gradient(to right, #000 calc(100% - 22px), transparent);
+}
+.filtros-chips::-webkit-scrollbar { display:none }
+
+.chip-cat {
+  flex-shrink:0;
+  scroll-snap-align:start;
+  display:inline-flex; align-items:center; gap:6px;
+  padding:9px 15px;
+  border:1px solid var(--linea); border-radius:999px;
+  background:var(--blanco); color:var(--texto);
+  font-family:'Poppins', sans-serif; font-size:13.5px; font-weight:400;
+  white-space:nowrap; cursor:pointer;
+  transition:background-color .2s, color .2s, border-color .2s;
+}
+.chip-cat:hover { border-color:var(--rosa); color:var(--titulo) }
+.chip-cat.activo {
+  background:var(--vino); border-color:var(--vino); color:var(--crema);
+  font-weight:500;
+}
+.chip-num {
+  font-size:11px; opacity:.6;
+  font-variant-numeric:tabular-nums;
+}
+.chip-cat.activo .chip-num { opacity:.75 }
+
+/* --- Buscador --- */
+.buscador {
+  position:relative;
+  display:flex; align-items:center;
+  flex:0 1 260px;
+  min-width:190px;
+}
+.buscador-icono {
+  position:absolute; left:13px;
+  width:17px; height:17px;
+  color:var(--texto-suave); pointer-events:none;
+}
+.buscador input {
+  width:100%;
+  padding:11px 36px 11px 38px;
+  border:1px solid var(--linea); border-radius:999px;
+  background:var(--crema); color:var(--texto);
+  font-family:'Poppins', sans-serif; font-size:16px;  /* 16px evita el zoom de iOS */
+  font-weight:300;
+  transition:border-color .2s, background-color .2s;
+  -webkit-appearance:none; appearance:none;
+}
+.buscador input::placeholder { color:var(--texto-suave); opacity:.85 }
+.buscador input:focus { outline:none; border-color:var(--rosa); background:var(--blanco) }
+/* La X propia del navegador estorba: usamos la nuestra */
+.buscador input::-webkit-search-cancel-button { -webkit-appearance:none; appearance:none }
+
+.buscador-limpiar {
+  position:absolute; right:9px;
+  width:24px; height:24px;
+  display:flex; align-items:center; justify-content:center;
+  border:none; border-radius:50%;
+  background:var(--rosa-polvo); color:var(--titulo);
+  font-size:17px; line-height:1; cursor:pointer;
+  transition:background-color .2s;
+}
+.buscador-limpiar:hover { background:var(--rosa) }
+.buscador-limpiar[hidden] { display:none }
+
+/* --- Conteo y estado vacío --- */
+.conteo {
+  font-size:12.5px; color:var(--texto-suave);
+  margin:0 0 12px; min-height:18px;
+  text-align:left;
+}
+.conteo:empty { margin:0; min-height:0 }
+
+.sin-resultados {
+  padding:56px 20px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+}
+.sin-resultados[hidden] { display:none }
+.sin-resultados span { font-size:40px; opacity:.55 }
+.sin-resultados p { font-size:15.5px; color:var(--texto); margin:0 }
+.sin-resultados .btn-1 { margin-top:6px }
+
+@media (max-width:640px) {
+  .productos-encabezado { margin-bottom:22px }
+  .productos .productos-encabezado h2 { letter-spacing:-1px }
+  .productos-encabezado .txt-p { font-size:14.5px }
+  .filtros {
+    gap:10px; padding:10px;
+    border-radius:14px;
+    flex-direction:column; align-items:stretch;
+    /* En columna, flex-wrap:wrap arma varias columnas y el ancho pasa a
+       mandarlo el contenido: la fila de pastillas estiraba la página. */
+    flex-wrap:nowrap;
+  }
+  .filtros-chips { flex:1 1 auto; margin:0 -2px }
+  .buscador { flex:1 1 auto }
+  .chip-cat { font-size:12.5px; padding:8px 13px }
+  .buscador input { padding:10px 34px 10px 36px }
+}
+
 .productos-group,
 .extra-products.show {
   display:grid;
@@ -272,71 +585,183 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 .producto-card {
   display:flex; flex-direction:column;
-  background:var(--blanco); padding:18px; border-radius:16px; text-align:center;
+  background:var(--blanco);
+  border-radius:16px;
   border:1px solid var(--linea);
   box-shadow:var(--sombra);
-  width:100%; max-width:none;
-  height:100%;
-  transition:transform .25s, box-shadow .25s;
+  width:100%; height:100%;
+  overflow:hidden;              /* la foto llega a la orilla y se recorta al radio */
+  text-align:left;              /* antes iba centrado; ahora alineado a la izquierda */
+  transition:transform .25s, box-shadow .25s, border-color .25s;
 }
 .producto-card:hover { transform:translateY(-5px); box-shadow:var(--sombra-alta) }
 
-.producto-card h3 { font-size:18px; color:var(--titulo); margin:12px 0 6px; line-height:1.3 }
-.producto-card p { color:var(--texto-suave); margin-bottom:14px; font-size:15px }
-.producto-card .producto-unidad { color:var(--texto); font-weight:500; font-size:13px }
+/* Ya está en el carrito: se marca con el borde del color de la marca */
+.producto-card--en-carrito { border-color:var(--vino); box-shadow:0 0 0 1px var(--vino), var(--sombra) }
+.producto-card--agotado    { opacity:.72 }
+.producto-card--agotado .producto-media img { filter:grayscale(.55) }
+
+/* ---------- Foto a sangre + pastilla flotante ---------- */
+.producto-media { position:relative; line-height:0 }
 
 .producto-card img {
-  width:100%; max-width:none;
-  aspect-ratio:4 / 3;
-  height:auto;
-  object-fit:cover;
-  display:block; margin:0 0 4px;
-  border-radius:12px;
+  width:100%; aspect-ratio:4 / 3; height:auto;
+  object-fit:cover; display:block;
   background:var(--nude);
 }
 .producto-img {
-  width:100%; aspect-ratio:4 / 3; height:auto;
+  width:100%; aspect-ratio:4 / 3;
   display:flex; align-items:center; justify-content:center; font-size:44px;
-  background:linear-gradient(180deg,#fff,#f7f0ef); border-radius:12px;
-  color:var(--titulo); margin-bottom:4px;
+  background:linear-gradient(180deg,#fff,#f7f0ef);
+  color:var(--titulo); line-height:1;
 }
 
-.productos-content #ver-mas { display:inline-block !important; margin:36px auto 0; text-align:center }
+/* La pastilla se monta sobre el borde inferior de la foto */
+.pastilla {
+  position:absolute; left:50%; bottom:-17px; transform:translateX(-50%);
+  z-index:2;
+  display:inline-flex; align-items:center; justify-content:center; gap:7px;
+  min-height:34px; padding:0 16px;
+  border:1px solid var(--linea); border-radius:999px;
+  background:var(--blanco); color:var(--titulo);
+  font-family:'Poppins', sans-serif; font-size:12px; font-weight:500;
+  line-height:1; white-space:nowrap; cursor:pointer;
+  box-shadow:0 6px 16px rgba(124,86,81,.16);
+  transition:background-color .2s, color .2s, box-shadow .2s, transform .15s;
+}
+.pastilla:hover { background:var(--vino); color:var(--crema); border-color:var(--vino) }
+.pastilla .icono-mini { width:15px; height:15px; flex-shrink:0 }
+
+/* Cuando ya está en el carrito, la pastilla se vuelve contador */
+.pastilla--contador {
+  background:var(--vino); border-color:var(--vino); color:var(--crema);
+  gap:2px; padding:0 4px; cursor:default;
+}
+.pastilla--contador button {
+  border:none; background:none; cursor:pointer; color:inherit;
+  width:30px; height:32px; font-size:17px; line-height:1;
+  font-family:'Poppins', sans-serif;
+  border-radius:999px; transition:background-color .18s;
+}
+.pastilla--contador button:hover { background:rgba(255,255,255,.2) }
+.pastilla--contador span { min-width:20px; text-align:center; font-size:13px; font-weight:500 }
+
+.pastilla--agotado {
+  background:var(--rosa-polvo); border-color:var(--rosa-polvo);
+  color:var(--titulo); cursor:not-allowed;
+  text-transform:uppercase; letter-spacing:1.2px; font-size:10px;
+}
+
+/* Contador de piezas para los productos con variantes */
+.producto-insignia {
+  position:absolute; top:9px; right:9px; z-index:2;
+  min-width:24px; height:24px; padding:0 7px;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:999px; background:var(--vino); color:var(--crema);
+  font-family:'Poppins', sans-serif; font-size:12px; font-weight:600; line-height:1;
+  box-shadow:0 3px 10px rgba(124,86,81,.3);
+}
+
+/* ---------- Texto ---------- */
+.producto-info {
+  display:flex; flex-direction:column;
+  padding:28px 16px 16px;       /* el 28 de arriba deja lugar a la pastilla */
+  flex:1;
+}
+
+.producto-categoria {
+  display:block; font-size:10.5px; text-transform:uppercase;
+  letter-spacing:1.3px; color:var(--texto-suave); margin-bottom:5px;
+}
+
+.producto-card h3 {
+  font-size:16px; color:var(--titulo);
+  margin:0 0 8px; line-height:1.3;
+}
+
+.producto-colores {
+  display:flex; flex-wrap:wrap; gap:5px;
+  justify-content:flex-start;
+  margin:0 0 10px;
+}
+
+.producto-pie {
+  display:flex; align-items:center; justify-content:space-between;
+  gap:10px; margin-top:auto;
+}
+.producto-precio {
+  display:flex; align-items:baseline; gap:5px; flex-wrap:wrap;
+  font-family:'Epilogue','Merriweather', serif;
+  font-size:18px; font-weight:500; color:var(--vino);
+}
+.producto-precio i {
+  font-family:'Poppins', sans-serif; font-style:normal;
+  font-size:11.5px; font-weight:300; color:var(--texto-suave);
+}
+.precio-desde {
+  font-family:'Poppins', sans-serif;
+  font-size:9.5px; font-weight:400; color:var(--texto-suave);
+  text-transform:uppercase; letter-spacing:1px; margin-right:1px;
+}
+
+/* Botón chico de WhatsApp: reemplaza al enlace de texto que iba debajo */
+.btn-wa {
+  width:32px; height:32px; flex-shrink:0;
+  display:flex; align-items:center; justify-content:center;
+  border-radius:50%; border:1px solid var(--linea);
+  color:#3f9e5f; background:var(--blanco);
+  transition:background-color .2s, color .2s, border-color .2s;
+}
+.btn-wa svg { width:17px; height:17px }
+.btn-wa:hover { background:#3f9e5f; color:#fff; border-color:#3f9e5f }
+
+.productos-content #ver-mas { display:inline-block; margin:36px auto 0; text-align:center }
+/* El !important de arriba se quitó: impedía esconder el botón al filtrar.
+   Ahora se oculta con el atributo hidden, que sí gana. */
+.productos-content #ver-mas[hidden] { display:none }
 
 @media (max-width:900px) {
   .productos-group,
   .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:20px }
 }
-/* En celular se mantienen DOS por fila: la tarjeta y todo lo de adentro
-   se achican para que quepan sin apretarse. */
+
+/* En celular se mantienen DOS por fila: todo lo de adentro se achica
+   para que quepan sin apretarse. */
 @media (max-width:560px) {
   .productos-group,
   .extra-products.show { grid-template-columns:repeat(2, 1fr); gap:12px }
 
-  .producto-card { padding:10px 10px 12px; border-radius:14px }
-  .producto-card img,
-  .producto-img { border-radius:10px }
-  .producto-card h3 { font-size:14px; margin:10px 0 4px; line-height:1.25 }
-  .producto-card p { font-size:13px; margin-bottom:10px }
-  .producto-card .producto-unidad { font-size:11px }
+  .producto-card { border-radius:14px }
+  .producto-info { padding:24px 11px 12px }
+  .producto-card h3 { font-size:13.5px; margin-bottom:6px }
+  .producto-categoria { font-size:9px; letter-spacing:1px; margin-bottom:4px }
+  .producto-precio { font-size:15px; gap:3px }
+  .producto-precio i { font-size:10px }
+  .precio-desde { font-size:8.5px; letter-spacing:.6px }
 
-  .btn-pedir,
-  .producto-agotado {
-    padding:9px 8px;
-    font-size:9px;
-    letter-spacing:.8px;
-  }
+  .pastilla { bottom:-15px; min-height:30px; padding:0 11px; font-size:10.5px; gap:5px }
+  .pastilla .icono-mini { width:13px; height:13px }
+  .pastilla--contador { padding:0 3px }
+  .pastilla--contador button { width:25px; height:28px; font-size:15px }
+  .pastilla--contador span { min-width:16px; font-size:12px }
+  .pastilla--agotado { font-size:9px; letter-spacing:.8px }
+
+  .btn-wa { width:28px; height:28px }
+  .btn-wa svg { width:15px; height:15px }
+  .producto-insignia { min-width:21px; height:21px; font-size:11px; top:7px; right:7px }
 }
 
-/* Pantallas muy angostas (iPhone SE y similares): se aprieta un poco más
-   el texto para que "Pedir por WhatsApp" no se parta feo. */
+/* Pantallas muy angostas (iPhone SE y similares) */
 @media (max-width:360px) {
   .productos-group,
   .extra-products.show { gap:9px }
-  .producto-card { padding:8px 8px 10px }
-  .producto-card h3 { font-size:13px }
-  .btn-pedir,
-  .producto-agotado { font-size:8.5px; letter-spacing:.4px; padding:9px 5px }
+  .producto-info { padding:23px 9px 11px }
+  .producto-card h3 { font-size:12.5px }
+  .producto-precio { font-size:14px }
+  .pastilla { font-size:9.5px; padding:0 9px; gap:4px }
+  .pastilla .icono-mini { display:none }   /* con tan poco ancho, mejor solo el texto */
+  .btn-wa { width:26px; height:26px }
+  .btn-wa svg { width:14px; height:14px }
 }
 
 /* ============================================================
@@ -585,48 +1010,55 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   /* la posición ya está centrada arriba; aquí no hace falta cambiarla */
   .header-content { flex-direction:column; justify-content:center; align-items:flex-start; padding-top:140px; padding-bottom:70px; gap:22px }
   .header-texto { padding:0; max-width:100% }
-  .navbar ul li a { padding:10px 20px; color:#000; display:block; border-bottom:1px solid rgba(124,86,81,0.06) }
   .promo-inner { flex-direction:column; text-align:center }
   .promo-texto .divisor--izq { margin-left:auto; margin-right:auto }
 }
 
+/* Con los links a 16px, cinco de ellos más el logo ya no caben antes de
+   los ~870px: por eso la hamburguesa entra aquí y no hasta los 600. */
+@media (max-width:870px) {
+  .menu-label { display:flex }
+
+  /* El menú se despliega como panel debajo de la barra, de orilla a orilla */
+  .navbar {
+    display:none;
+    position:absolute;
+    top:100%; left:0; right:0;
+    background:rgba(253,248,244,.97);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    border-bottom:1px solid var(--linea);
+    box-shadow:0 18px 34px rgba(124,86,81,.14);
+    padding:6px 0 10px;
+  }
+  #menu:checked + .menu-label + .navbar { display:block }
+
+  /* Va con .menu delante: si no, la regla de escritorio (.menu .navbar ul,
+     con más especificidad) sigue mandando y los links salen centrados. */
+  .menu .navbar ul { flex-direction:column; align-items:stretch; gap:0; padding:0 8px }
+  .menu .navbar ul li a {
+    padding:15px 16px;
+    font-size:16.5px;
+    color:#1f1b1a;
+    border-radius:12px;
+    border-bottom:1px solid var(--linea);
+  }
+  .menu .navbar ul li:last-child a { border-bottom:none }
+  .menu .navbar ul li a::after { display:none }   /* en lista vertical el subrayado estorba */
+  .menu .navbar ul li a:hover,
+  .menu .navbar ul li a.activo { color:var(--vino); background:var(--nude) }
+}
+
 @media (max-width:600px) {
 
-  .menu {
-    padding:14px 16px 14px 14px;
-    position:relative;
-    background:rgba(255,255,255,0.12);
-    border:1px solid rgba(255,255,255,0.22);
-    box-shadow:0 16px 28px rgba(73,38,33,0.12);
-  }
-  .menu-label { display:flex }
-  .navbar { display:none }
-  #menu:checked + .menu-label + .navbar {
-    display:block;
-    background:rgba(255,255,255,0.90);
-    padding:20px 10px;
-    position:absolute;
-    top:72px;
-    right:20px;
-    border-radius:16px;
-    box-shadow:0 18px 36px rgba(124,86,81,0.18);
-    z-index:30;
-    border:1px solid rgba(124,86,81,0.08);
-  }
-  .navbar ul { flex-direction:column; gap:16px }
-  .navbar ul li a {
-    padding:10px 20px;
-    color:var(--titulo);
-    display:block;
-    border-bottom:1px solid rgba(124,86,81,0.06);
-    text-shadow:none;
-  }
-  .navbar ul li a:hover { color:var(--vino) }
+
   .header-content { padding-top:120px; align-items:flex-start }
   .header-texto h1 {
-    font-size: clamp(46px, 14vw, 76px);
-    line-height:0.98;
-    letter-spacing:-0.05em;
+    /* El mínimo va en 15vw y no en un valor fijo: a 320px "Quequitos"
+       medía 266px dentro de una caja de 260 y se salía. */
+    font-size: clamp(44px, 15vw, 86px);
+    line-height:0.95;
+    letter-spacing:-0.055em;
     font-weight:800;
   }
   .productos, .referencias, .metodos, .promo { padding:70px 0 }
@@ -638,46 +1070,14 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
    siguen siendo blanco puro.
    ============================================================ */
 
-/* --- Reset para los botones que antes eran <a> --- */
-.btn-pedir {
-  border:none;
-  font-family:'Poppins', sans-serif;
-  cursor:pointer;
-  -webkit-appearance:none;
-  appearance:none;
-}
-
-/* --- Enlace chico "o pedir directo por WhatsApp" --- */
-.link-pedir-ya {
-  display:block;
-  margin-top:8px;
-  font-size:10.5px;
-  color:var(--texto-suave);
-  letter-spacing:.2px;
-  text-decoration:underline;
-  text-underline-offset:2px;
-  transition:color .2s;
-}
-.link-pedir-ya:hover { color:var(--vino) }
-
 /* --- Vistazo de colores en la tarjeta --- */
-.producto-colores {
-  display:flex; flex-wrap:wrap; gap:5px;
-  justify-content:center;
-  margin:0 0 14px;
-}
 .punto-color {
-  width:13px; height:13px; border-radius:50%;
+  width:12px; height:12px; border-radius:50%;
   border:1px solid rgba(124,86,81,.28);
   display:inline-block;
 }
 .punto-color--agotado { opacity:.3 }
 .punto-mas { font-size:10px; color:var(--texto-suave); align-self:center }
-
-.precio-desde {
-  font-size:11px; color:var(--texto-suave);
-  text-transform:uppercase; letter-spacing:1px;
-}
 
 /* ============================================================
    BOTÓN FLOTANTE DEL CARRITO
@@ -817,8 +1217,8 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 .carrito-campo { margin-bottom:12px }
 .carrito-campo.oculto { display:none }
 .carrito-campo label {
-  display:block; font-size:11px; text-transform:uppercase;
-  letter-spacing:1.2px; color:var(--texto-suave); margin-bottom:5px;
+  display:block; font-family:Arial,sans-serif; font-size:15px;
+  letter-spacing:0; color:black; margin-bottom:5px;
 }
 .carrito-campo label i { text-transform:none; letter-spacing:0; font-style:normal; opacity:.75 }
 .carrito-campo input,
@@ -842,10 +1242,10 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   display:flex; align-items:baseline; justify-content:space-between;
   padding:12px 0 14px; border-top:1px solid var(--linea); margin-top:4px;
 }
-.carrito-total span { font-size:12px; text-transform:uppercase; letter-spacing:1.5px; color:var(--texto-suave) }
+.carrito-total span { font-family:Arial,sans-serif; font-size:18px; letter-spacing:0; color:black; }
 .carrito-total b { font-family:'Epilogue','Merriweather',serif; font-size:24px; font-weight:500; color:var(--titulo) }
 
-.carrito-pedir { width:100%; border:none; cursor:pointer; font-family:'Poppins',sans-serif }
+.carrito-pedir { width:100%; border:none; cursor:pointer; font-family:Arial,sans-serif; font-size:13px; letter-spacing:0; text-transform:none }
 .carrito-vaciar {
   display:block; width:100%; margin-top:10px;
   border:none; background:none; cursor:pointer;
@@ -896,7 +1296,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
 
 .grupo-opcion { margin-bottom:18px }
 .grupo-etiqueta {
-  display:block; font-size:11px; text-transform:uppercase;
+  display:block; font-size:15px; text-transform:uppercase;
   letter-spacing:1.2px; color:var(--texto-suave); margin-bottom:9px;
 }
 .grupo-etiqueta b { color:var(--titulo); font-weight:500; text-transform:none; letter-spacing:.2px; font-size:12.5px }
@@ -939,7 +1339,7 @@ section h2 { font-size:clamp(45px, 6vw, 54px); line-height:1.15; margin-bottom:0
   display:flex; align-items:baseline; justify-content:space-between;
   padding:14px 0 16px; border-top:1px solid var(--linea);
 }
-.modal-total span { font-size:11.5px; text-transform:uppercase; letter-spacing:1.4px; color:var(--texto-suave) }
+.modal-total span { font-size:18px;  letter-spacing:1.5px; color:black; }
 .modal-total b { font-family:'Epilogue','Merriweather',serif; font-size:23px; font-weight:500; color:var(--titulo) }
 
 .modal-agregar { width:100%; border:none; cursor:pointer; font-family:'Poppins', sans-serif }
@@ -952,10 +1352,8 @@ body.sin-scroll { overflow:hidden }
    Las tarjetas van de dos en dos, así que lo de adentro se achica.
    ============================================================ */
 @media (max-width:560px) {
-  .link-pedir-ya { font-size:9px; margin-top:6px }
-  .producto-colores { gap:4px; margin-bottom:10px }
-  .punto-color { width:11px; height:11px }
-  .precio-desde { font-size:9px; letter-spacing:.6px }
+  .producto-colores { gap:4px; margin-bottom:8px }
+  .punto-color { width:10px; height:10px }
 
   .boton-carrito { width:52px; height:52px; right:16px; bottom:16px }
   .boton-carrito svg { width:22px; height:22px }
@@ -974,6 +1372,5 @@ body.sin-scroll { overflow:hidden }
 }
 
 @media (max-width:360px) {
-  .link-pedir-ya { font-size:8.5px }
-  .punto-color { width:10px; height:10px }
+  .punto-color { width:9px; height:9px }
 }
